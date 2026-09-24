@@ -1,0 +1,123 @@
+% ===================================================================
+%  Общая преамбула для семинаров по эконометрике.
+%  Подключается из <seminar_NN>_problems.tex и <seminar_NN>_solutions.tex
+%  строкой \input{../_tex/econ_preamble}
+%
+%  Компилировать XeLaTeX'ом (нужен fontspec), два прохода.
+%  Драйвер обязан определить \newif\ifsolutions ДО этого \input.
+% ===================================================================
+
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\setsansfont{Arial}
+\setmonofont{Consolas}
+
+\usepackage[russian]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,array,multirow}
+\usepackage{enumitem}
+% Регистрируем русский счётчик, иначе метка label=\asbuk*) не работает.
+\makeatletter
+\AddEnumerateCounter{\asbuk}{\@asbuk}{щ}
+\makeatother
+\usepackage{xcolor}
+\usepackage{framed}
+\usepackage{comment}
+\usepackage[a4paper,margin=25mm,headheight=15pt]{geometry}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+% ------------------------- цвета -----------------------------------
+\definecolor{accent}{RGB}{0,80,130}
+\definecolor{solbar}{RGB}{0,120,90}
+\definecolor{notebar}{RGB}{170,120,0}
+\definecolor{xlbar}{RGB}{110,60,140}
+
+% --------------- название семинара для колонтитула ------------------
+\newcommand{\seminarname}{Семинар}
+\newcommand{\setseminar}[1]{\renewcommand{\seminarname}{#1}}
+
+% ------------------------ колонтитулы -------------------------------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\itshape Эконометрика \textperiodcentered\ \seminarname}
+\fancyhead[R]{\small\itshape \ifsolutions Решения\else Условия\fi}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ------------------------ заголовки ---------------------------------
+\titleformat{\section}{\large\bfseries\color{accent}}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\bfseries}{\thesubsection.}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.4\baselineskip}{0.6\baselineskip}
+
+% --------------------- шапка документа ------------------------------
+% \seminartitle{Семинар 2}{подзаголовок}
+\newcommand{\seminartitle}[2]{%
+  \setseminar{#1}%
+  \begin{center}
+    {\LARGE\bfseries\color{accent} #1}\\[2pt]
+    {\large #2}\\[4pt]
+    {\itshape \ifsolutions Условия и решения \else Условия задач \fi}
+  \end{center}
+  \vspace{0.8\baselineskip}}
+
+% --------------------- блок «Задача N» ------------------------------
+\newcommand{\problem}[1]{%
+  \bigskip\par\noindent
+  {\bfseries\color{accent}\large Задача #1}\par\nopagebreak\smallskip}
+
+% ------------------- вертикальная линейка слева ----------------------
+\newenvironment{leftbarred}[1][solbar]{%
+  \def\FrameCommand{{\color{#1}\vrule width 2.5pt}\hspace{10pt}}%
+  \MakeFramed{\advance\hsize-\width \FrameRestore}}%
+ {\endMakeFramed}
+
+% ------------------------ «Замечание» --------------------------------
+\newenvironment{remark}{%
+  \par\smallskip\begin{leftbarred}[notebar]%
+  \noindent{\bfseries\color{notebar}Замечание.}\ \itshape}%
+ {\end{leftbarred}\par\smallskip}
+
+% ------------------------- «В Excel» ---------------------------------
+% Видно и в условиях, и в решениях: это часть задания, а не ответ.
+\newenvironment{excel}{%
+  \par\smallskip\begin{leftbarred}[xlbar]%
+  \noindent{\bfseries\color{xlbar}В Excel.}\ }%
+ {\end{leftbarred}\par\smallskip}
+
+% Имя пункта меню / кнопки в интерфейсе Excel
+\newcommand{\ui}[1]{\textsf{\small #1}}
+% Формула Excel
+\newcommand{\xl}[1]{\texttt{\small #1}}
+
+% ------------------------- «Решение» ---------------------------------
+% Если \solutionsfalse — всё содержимое окружения просто выбрасывается.
+\ifsolutions
+  \newenvironment{solution}{%
+    \par\smallskip\begin{leftbarred}[solbar]%
+    \noindent{\bfseries\color{solbar}Решение.}\ }%
+   {\end{leftbarred}\par\smallskip}
+\else
+  \excludecomment{solution}
+\fi
+
+% ---------------------- сокращения для формул ------------------------
+\newcommand{\TSS}{\mathrm{TSS}}
+\newcommand{\ESS}{\mathrm{ESS}}
+\newcommand{\RSS}{\mathrm{RSS}}
+% Матожидание и дисперсия — ажурным шрифтом (blackboard bold, amssymb).
+\newcommand{\E}{\mathbb{E}}   % математическое ожидание
+\newcommand{\D}{\mathbb{D}}   % дисперсия
+\newcommand{\V}{\D}           % то же; старое имя, им набраны тексты семинаров
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\yh}{\widehat{Y}}
+\newcommand{\bh}{\widehat{\beta}}
+\newcommand{\ah}{\widehat{\alpha}}
+\renewcommand{\arraystretch}{1.25}
+
+% Небольшой запас на растяжку строк: убирает единичные overfull-строки
+% в русском тексте, где переносов меньше, чем в английском.
+\emergencystretch=1.5em

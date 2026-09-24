@@ -1,0 +1,964 @@
+% ===================================================================
+%  Семинар 1. Содержательная часть — единый источник для обоих файлов.
+%
+%  Состав задач взят из «Семинары.docx»:
+%      2.1, 2.3, 2.5, 2.6, 2.12, 2.2, 2.8
+%      Источник: Сборник задач к начальному курсу эконометрики (РАНХиГС),
+%                гл. 2 «Модель парной регрессии».
+%      + отдельная задача, источник:
+%        http://www.lib.uniyar.ac.ru/edocs/iuni/20040802.pdf
+%
+%  Порядок задач сохранён ровно тот, что указан в «Семинары.docx».
+%  Раздел «Основные формулы» и всё внутри \begin{solution}...\end{solution}
+%  попадает только в seminar_01_solutions.pdf.
+%
+%  Условия задач — дословно по сборнику. Решения опираются на формулы
+%  раздела 1 и ссылаются на них, не повторяя выводов.
+% ===================================================================
+
+\seminartitle{Семинар 1}{Модель парной регрессии: МНК, линеаризация,\\ проверка гипотез}
+
+% ===================================================================
+% Теория печатается только в файле с решениями.
+\ifsolutions
+\section{Основные формулы}
+
+% -------------------------------------------------------------------
+\subsection{Модель и предпосылки}\label{sec:model}
+
+Модель парной регрессии:
+\begin{equation}
+  Y_t = \alpha + \beta X_t + \varepsilon_t, \qquad t = 1,\dots,n,
+  \label{eq:model}
+\end{equation}
+где $Y_t$ — зависимая переменная, $X_t$ — объясняющая переменная (регрессор),
+$\varepsilon_t$ — случайная ошибка. Параметры $\alpha$ и $\beta$ —
+\emph{истинные} значения коэффициентов, то есть неизвестные константы, которые
+оцениваются по выборке. Прямую $\alpha + \beta X$ называют истинной линией
+регрессии. Ошибки $\varepsilon_t = Y_t - \alpha - \beta X_t$ — отклонения
+наблюдений от неё — не наблюдаются.
+
+\textbf{Предпосылки классической модели} (Магнус, с.~39):
+\begin{enumerate}[label=\arabic*), leftmargin=2.2em, itemsep=2pt]
+  \item выполнена спецификация \eqref{eq:model};
+  \item $X_t$ — детерминированные величины, не все равные между собой;
+  \item[3a)] $\E\varepsilon_t = 0$ и $\D(\varepsilon_t) = \sigma^2$ при всех $t$;
+  \item[3b)] $\Cov(\varepsilon_t, \varepsilon_s) = 0$ при $t \neq s$;
+  \item[3c)] $\varepsilon_t \sim N(0, \sigma^2)$.
+\end{enumerate}
+Свойства оценок в п.~\ref{sec:props}--\ref{sec:s2} выводятся из предпосылок
+1--3b. Нормальность 3c нужна только для распределений статистик в
+п.~\ref{sec:tests}.
+
+\textbf{Обозначения.} Суммы берутся по $t = 1,\dots,n$.
+\begin{itemize}[leftmargin=2.2em, itemsep=2pt]
+  \item $\ah$, $\bh$ — оценки параметров, $\yh_t = \ah + \bh X_t$ — подогнанные
+        значения, $e_t = Y_t - \yh_t$ — остатки. В отличие от ошибок, остатки
+        отсчитываются от \emph{оценённой} прямой и вычисляются по данным.
+  \item $\overline{X} = \tfrac{1}{n}\sum X_t$; так же обозначаются средние
+        $\overline{Y}$ и $\overline{\varepsilon}$.
+  \item $x_t = X_t - \overline{X}$, $y_t = Y_t - \overline{Y}$,
+        $\widehat{y}_t = \yh_t - \overline{Y}$ — отклонения от средних.
+\end{itemize}
+
+\textbf{Свойства математического ожидания и дисперсии.} Пусть
+$Z, Z_1, \dots, Z_n$ — случайные величины, $c, c_1, \dots, c_n$ — константы.
+Тогда
+\begin{gather}
+  \E\Bigl(\sum c_tZ_t\Bigr) = \sum c_t\,\E Z_t,
+  \label{eq:E-lin} \\
+  \D(Z) = \E\bigl[(Z - \E Z)^2\bigr] = \E\bigl[Z^2\bigr] - \bigl(\E Z\bigr)^2,
+  \label{eq:D-def} \\
+  \D(c + Z) = \D(Z),
+  \qquad
+  \D(cZ) = c^2\,\D(Z),
+  \qquad
+  \D\Bigl(\sum c_tZ_t\Bigr) = \sum c_t^2\,\D(Z_t),
+  \label{eq:D-props}
+\end{gather}
+где последнее равенство верно для попарно некоррелированных $Z_t$.
+
+% -------------------------------------------------------------------
+\subsection{Метод наименьших квадратов}\label{sec:ols}
+
+МНК-оценки $\ah$, $\bh$ минимизируют сумму квадратов отклонений наблюдений от
+прямой:
+\[
+  S(a,b) = \sum\bigl(Y_t - a - bX_t\bigr)^2 \;\longrightarrow\; \min_{a,\,b}.
+\]
+Условия первого порядка
+\[
+  \frac{\partial S}{\partial a} = -2\sum\bigl(Y_t - a - bX_t\bigr) = 0,
+  \qquad
+  \frac{\partial S}{\partial b} = -2\sum\bigl(Y_t - a - bX_t\bigr)X_t = 0
+\]
+в точке $(\ah, \bh)$ записываются через остатки и называются
+\emph{нормальными уравнениями}:
+\begin{equation}
+  \sum e_t = 0, \qquad \sum e_tX_t = 0 .
+  \label{eq:normal}
+\end{equation}
+В развёрнутом виде это система
+\[
+  \begin{cases}
+    n\,\ah + \bh\sum X_t = \sum Y_t, \\[2pt]
+    \ah\sum X_t + \bh\sum X_t^2 = \sum X_tY_t .
+  \end{cases}
+\]
+Первое уравнение, делённое на $n$, даёт $\ah = \overline{Y} - \bh\overline{X}$.
+Подставив его во второе и учитывая $\sum X_t = n\overline{X}$, получаем
+\[
+  \bh\Bigl(\sum X_t^2 - n\overline{X}^2\Bigr)
+  = \sum X_tY_t - n\overline{X}\,\overline{Y}.
+\]
+Выражения в скобках — суммы в отклонениях:
+\[
+  \sum x_t^2 = \sum\bigl(X_t - \overline{X}\bigr)^2
+  = \sum X_t^2 - 2\overline{X}\sum X_t + n\overline{X}^2
+  = \sum X_t^2 - n\overline{X}^2,
+\]
+и аналогично $\sum x_ty_t = \sum X_tY_t - n\overline{X}\,\overline{Y}$,
+$\sum y_t^2 = \sum Y_t^2 - n\overline{Y}^2$. Так как
+$n\overline{X}^2 = \bigl(\sum X_t\bigr)^2/n$, через исходные суммы
+\begin{equation}
+\begin{gathered}
+  \sum x_t^2 = \sum X_t^2 - \frac{\bigl(\sum X_t\bigr)^2}{n},
+  \qquad
+  \sum y_t^2 = \sum Y_t^2 - \frac{\bigl(\sum Y_t\bigr)^2}{n},
+  \\[4pt]
+  \sum x_ty_t = \sum X_tY_t - \frac{\sum X_t\sum Y_t}{n}.
+\end{gathered}
+\label{eq:dev-sums}
+\end{equation}
+Отсюда МНК-оценки:
+\begin{equation}
+  \bh = \frac{\sum x_ty_t}{\sum x_t^2}
+      = \frac{n\sum X_tY_t - \sum X_t\sum Y_t}{n\sum X_t^2 - \bigl(\sum X_t\bigr)^2},
+  \qquad
+  \ah = \overline{Y} - \bh\,\overline{X}.
+  \label{eq:ols}
+\end{equation}
+Найденная точка — минимум: матрица вторых производных
+\[
+  \begin{pmatrix}
+    \partial^2S/\partial a^2 & \partial^2S/\partial a\,\partial b \\
+    \partial^2S/\partial a\,\partial b & \partial^2S/\partial b^2
+  \end{pmatrix}
+  = 2\begin{pmatrix} n & \sum X_t \\ \sum X_t & \sum X_t^2 \end{pmatrix}
+\]
+положительно определена: угловой минор $2n > 0$, определитель
+$4\bigl(n\sum X_t^2 - (\sum X_t)^2\bigr) = 4n\sum x_t^2 > 0$ по предпосылке~2.
+
+\textbf{Алгебраические свойства МНК-оценок:}
+\begin{equation}
+  \sum x_t = 0,
+  \qquad
+  \widehat{y}_t = \bh x_t,
+  \qquad
+  e_t = y_t - \bh x_t,
+  \qquad
+  \sum x_ty_t = \bh\sum x_t^2 .
+  \label{eq:ols-props}
+\end{equation}
+Действительно, $\sum x_t = \sum X_t - n\overline{X} = 0$. Прямая проходит через
+точку средних, $\overline{Y} = \ah + \bh\overline{X}$, поэтому
+$\widehat{y}_t = (\ah + \bh X_t) - (\ah + \bh\overline{X}) = \bh x_t$ и
+$e_t = (Y_t - \overline{Y}) - (\yh_t - \overline{Y}) = y_t - \widehat{y}_t$.
+Последнее равенство — это \eqref{eq:ols}.
+
+\begin{remark}
+Вывод не зависит от того, какая из переменных объясняющая: в обратной регрессии
+$X$ на $Y$ наклон равен $\widehat{\gamma} = \sum x_ty_t \big/ \sum y_t^2$.
+\end{remark}
+
+% -------------------------------------------------------------------
+\subsection{Разложение суммы квадратов и коэффициент детерминации}\label{sec:decomp}
+
+В регрессии со свободным членом полный разброс зависимой переменной
+раскладывается на объяснённую и остаточную части:
+\begin{equation}
+  \underbrace{\sum\bigl(Y_t - \overline{Y}\bigr)^2}_{\TSS}
+  =
+  \underbrace{\sum\bigl(\yh_t - \overline{Y}\bigr)^2}_{\RSS}
+  +
+  \underbrace{\sum\bigl(Y_t - \yh_t\bigr)^2}_{\ESS}.
+  \label{eq:decomp}
+\end{equation}
+Здесь $\TSS$ (total sum of squares) — полная сумма квадратов, $\RSS$
+(regression sum of squares) — объяснённая регрессией, $\ESS$ (error sum of
+squares) — остаточная, $\ESS = \sum e_t^2$.
+
+\emph{Доказательство.} По \eqref{eq:ols-props} все три суммы выражаются через
+отклонения:
+\begin{equation}
+\begin{gathered}
+  \TSS = \sum y_t^2,
+  \qquad
+  \RSS = \sum\widehat{y}_t^2 = \bh^2\sum x_t^2,
+  \\[4pt]
+  \ESS = \sum e_t^2 = \sum y_t^2 - \bh^2\sum x_t^2 ,
+\end{gathered}
+\label{eq:ss-dev}
+\end{equation}
+где последнее равенство получается раскрытием квадрата:
+\[
+\begin{aligned}
+  \sum\bigl(y_t - \bh x_t\bigr)^2
+  &= \sum y_t^2 - 2\bh\sum x_ty_t + \bh^2\sum x_t^2 \\
+  &= \sum y_t^2 - 2\bh^2\sum x_t^2 + \bh^2\sum x_t^2
+   = \sum y_t^2 - \bh^2\sum x_t^2 .
+\end{aligned}
+\]
+Сумма $\RSS$ и $\ESS$ из \eqref{eq:ss-dev} равна $\TSS$. Свойства
+\eqref{eq:ols-props}, на которые опирается доказательство, следуют из
+\emph{обоих} нормальных уравнений. В регрессии без свободного члена уравнения
+$\sum e_t = 0$ нет, и тождество \eqref{eq:decomp}, вообще говоря, не выполняется
+(задача~2.8). $\blacksquare$
+
+\begin{remark}
+Обозначения $\RSS$ и $\ESS$ в литературе не унифицированы. Мы следуем сборнику
+РАНХиГС: $\RSS$ — \emph{объяснённая} (regression), $\ESS$ — \emph{остаточная}
+(error) сумма квадратов. В англоязычных учебниках (Greene, Wooldridge,
+Stock--Watson) те же буквы часто означают обратное: $\ESS$ — explained,
+$\RSS$ — residual. Ориентируйтесь не на аббревиатуру, а на формулу.
+\end{remark}
+
+\textbf{Коэффициент детерминации} — доля полного разброса, объяснённая
+регрессией. Так как $\RSS, \ESS \ge 0$,
+\begin{equation}
+  R^2 = \frac{\RSS}{\TSS} = 1 - \frac{\ESS}{\TSS}, \qquad 0 \le R^2 \le 1 .
+  \label{eq:r2}
+\end{equation}
+Подставив \eqref{eq:ss-dev} и $\bh$ из \eqref{eq:ols}, получаем
+\begin{equation}
+  R^2 = \frac{\bh^2\sum x_t^2}{\sum y_t^2}
+      = \Bigl(\frac{\sum x_ty_t}{\sum x_t^2}\Bigr)^{2}\frac{\sum x_t^2}{\sum y_t^2}
+      = \frac{\bigl(\sum x_ty_t\bigr)^2}{\sum x_t^2\sum y_t^2}.
+  \label{eq:r2-dev}
+\end{equation}
+
+\textbf{Выборочные характеристики} (Магнус, приложение МС, п.~6):
+\begin{equation}
+  s_X^2 = \frac{\sum x_t^2}{n-1},
+  \qquad
+  s_Y^2 = \frac{\sum y_t^2}{n-1},
+  \qquad
+  c_{XY} = \frac{\sum x_ty_t}{n-1},
+  \qquad
+  r_{XY} = \frac{c_{XY}}{s_Xs_Y}.
+  \label{eq:sample}
+\end{equation}
+Множители $1/(n-1)$ в $r_{XY}^2$ сокращаются, и по \eqref{eq:r2-dev}
+\[
+  r_{XY}^2 = \frac{c_{XY}^2}{s_X^2s_Y^2}
+           = \frac{\bigl(\sum x_ty_t\bigr)^2}{\sum x_t^2\sum y_t^2}
+           = R^2 .
+\]
+
+\textbf{Средняя ошибка аппроксимации} — среднее относительное отклонение
+подогнанных значений от наблюдаемых:
+\begin{equation}
+  \overline{A} = \frac{1}{n}\sum\biggl|\frac{Y_t - \yh_t}{Y_t}\biggr| \cdot 100\,\% .
+  \label{eq:approx}
+\end{equation}
+
+% -------------------------------------------------------------------
+\subsection{Статистические свойства оценки наклона}\label{sec:props}
+
+Вычтем из модели \eqref{eq:model} её среднее по наблюдениям,
+$\overline{Y} = \alpha + \beta\overline{X} + \overline{\varepsilon}$:
+\begin{equation}
+  y_t = \bigl(\alpha + \beta X_t + \varepsilon_t\bigr)
+        - \bigl(\alpha + \beta\overline{X} + \overline{\varepsilon}\bigr)
+      = \beta x_t + \varepsilon_t - \overline{\varepsilon}.
+  \label{eq:y-dev}
+\end{equation}
+Подставив это в \eqref{eq:ols} и учитывая $\sum x_t = 0$, выразим оценку через
+ошибки:
+\begin{equation}
+\begin{aligned}
+  \bh &= \frac{\sum x_ty_t}{\sum x_t^2}
+       = \frac{\sum x_t\bigl(\beta x_t + \varepsilon_t - \overline{\varepsilon}\bigr)}{\sum x_t^2}
+       = \frac{\beta\sum x_t^2 + \sum x_t\varepsilon_t
+               - \overline{\varepsilon}\sum x_t}{\sum x_t^2} \\[4pt]
+      &= \beta + \frac{\sum x_t\varepsilon_t}{\sum x_t^2}.
+\end{aligned}
+\label{eq:bhat-eps}
+\end{equation}
+Веса $x_t/\sum x_t^2$ неслучайны (предпосылка~2). Поэтому по \eqref{eq:E-lin} и
+предпосылке~3a оценка несмещённая:
+\begin{equation}
+  \E\bh = \beta + \frac{\sum x_t\,\E\varepsilon_t}{\sum x_t^2} = \beta,
+  \label{eq:unbiased}
+\end{equation}
+а по \eqref{eq:D-props} и предпосылкам 3a, 3b её дисперсия равна
+\begin{equation}
+\begin{aligned}
+  \D(\bh) &= \D\Bigl(\beta + \frac{\sum x_t\varepsilon_t}{\sum x_t^2}\Bigr)
+           = \D\Bigl(\frac{\sum x_t\varepsilon_t}{\sum x_t^2}\Bigr)
+           = \frac{1}{\bigl(\sum x_t^2\bigr)^2}\sum x_t^2\,\D(\varepsilon_t) \\[4pt]
+          &= \frac{\sigma^2\sum x_t^2}{\bigl(\sum x_t^2\bigr)^2}
+           = \frac{\sigma^2}{\sum x_t^2}.
+\end{aligned}
+\label{eq:var-b}
+\end{equation}
+Точность оценки наклона тем выше, чем больше разброс регрессора $\sum x_t^2$.
+
+% -------------------------------------------------------------------
+\subsection{Оценка дисперсии ошибок}\label{sec:s2}
+
+Дисперсия \eqref{eq:var-b} содержит неизвестный параметр $\sigma^2$. Будь ошибки
+$\varepsilon_t$ наблюдаемы, его несмещённой оценкой была бы
+$\frac{1}{n}\sum\varepsilon_t^2$. Остатки же систематически меньше ошибок:
+МНК-прямая минимизирует сумму квадратов среди всех прямых и потому даёт не
+большую сумму, чем истинная прямая $\alpha + \beta X$:
+\[
+  \sum e_t^2 = \min_{a,b}\sum\bigl(Y_t - a - bX_t\bigr)^2
+  \le \sum\bigl(Y_t - \alpha - \beta X_t\bigr)^2 = \sum\varepsilon_t^2 .
+\]
+Поэтому делитель $n$ дал бы оценку, смещённую вниз. Найдём смещение точно.
+
+\textbf{Лемма.} При предпосылках 3a, 3b
+\begin{equation}
+  \E\sum\bigl(\varepsilon_t - \overline{\varepsilon}\bigr)^2 = (n-1)\sigma^2 .
+  \label{eq:lemma}
+\end{equation}
+
+\emph{Доказательство.} Раскроем квадрат, учитывая
+$\sum\varepsilon_t = n\overline{\varepsilon}$:
+\[
+  \sum\bigl(\varepsilon_t - \overline{\varepsilon}\bigr)^2
+  = \sum\varepsilon_t^2 - 2\overline{\varepsilon}\sum\varepsilon_t + n\overline{\varepsilon}^2
+  = \sum\varepsilon_t^2 - 2n\overline{\varepsilon}^2 + n\overline{\varepsilon}^2
+  = \sum\varepsilon_t^2 - n\overline{\varepsilon}^2 .
+\]
+Так как $\E\varepsilon_t = \E\overline{\varepsilon} = 0$, по \eqref{eq:D-def} и
+\eqref{eq:D-props}
+\[
+  \E\bigl[\varepsilon_t^2\bigr] = \D(\varepsilon_t) = \sigma^2,
+  \qquad
+  \E\bigl[\overline{\varepsilon}^2\bigr]
+  = \D\Bigl(\frac{1}{n}\sum\varepsilon_t\Bigr)
+  = \frac{1}{n^2}\sum\D(\varepsilon_t)
+  = \frac{1}{n^2}\cdot n\sigma^2 = \frac{\sigma^2}{n},
+\]
+откуда
+\[
+  \E\sum\bigl(\varepsilon_t - \overline{\varepsilon}\bigr)^2
+  = \sum\E\bigl[\varepsilon_t^2\bigr] - n\,\E\bigl[\overline{\varepsilon}^2\bigr]
+  = n\sigma^2 - n\cdot\frac{\sigma^2}{n} = (n-1)\sigma^2 .
+  \qquad\blacksquare
+\]
+
+\textbf{Теорема.} При предпосылках 1--3b
+\[
+  \E\sum e_t^2 = (n-2)\sigma^2,
+\]
+поэтому несмещёнными оценками $\sigma^2$ и $\D(\bh)$ служат
+\begin{equation}
+  s^2 = \frac{1}{n-2}\sum e_t^2,
+  \qquad
+  s_{\bh}^2 = \frac{s^2}{\sum x_t^2}.
+  \label{eq:s2}
+\end{equation}
+Величина $s_{\bh}$ называется стандартной ошибкой оценки $\bh$.
+
+\emph{Доказательство.} Возьмём математическое ожидание от $\ESS$ в форме
+\eqref{eq:ss-dev}; $x_t$ неслучайны:
+\[
+  \E\sum e_t^2 = \E\sum y_t^2 - \E\bigl[\bh^2\bigr]\sum x_t^2 .
+\]
+Первое слагаемое найдём по \eqref{eq:y-dev}. Перекрёстный член равен нулю, так
+как $\E(\varepsilon_t - \overline{\varepsilon}) = 0$, а последний член даёт
+лемма \eqref{eq:lemma}:
+\[
+\begin{aligned}
+  \E\sum y_t^2
+  &= \E\sum\bigl(\beta x_t + \varepsilon_t - \overline{\varepsilon}\bigr)^2
+   = \beta^2\sum x_t^2
+     + 2\beta\sum x_t\,\E\bigl(\varepsilon_t - \overline{\varepsilon}\bigr)
+     + \E\sum\bigl(\varepsilon_t - \overline{\varepsilon}\bigr)^2 \\[4pt]
+  &= \beta^2\sum x_t^2 + (n-1)\sigma^2 .
+\end{aligned}
+\]
+Второе слагаемое — по \eqref{eq:D-def}, \eqref{eq:unbiased} и \eqref{eq:var-b}:
+\[
+  \E\bigl[\bh^2\bigr]\sum x_t^2
+  = \Bigl(\D(\bh) + \bigl(\E\bh\bigr)^2\Bigr)\sum x_t^2
+  = \Bigl(\frac{\sigma^2}{\sum x_t^2} + \beta^2\Bigr)\sum x_t^2
+  = \sigma^2 + \beta^2\sum x_t^2 .
+\]
+Следовательно,
+\[
+  \E\sum e_t^2 = \beta^2\sum x_t^2 + (n-1)\sigma^2 - \sigma^2 - \beta^2\sum x_t^2
+  = (n-2)\sigma^2,
+\]
+откуда $\E\bigl[s^2\bigr] = \sigma^2$ и
+$\E\bigl[s_{\bh}^2\bigr] = \sigma^2/\sum x_t^2 = \D(\bh)$. $\blacksquare$
+
+Число $n-2$ — это число \emph{степеней свободы} остатков: нормальные уравнения
+\eqref{eq:normal} накладывают на $n$ остатков две линейные связи, и свободно
+меняться могут лишь $n-2$ из них. Общее правило: делитель равен $n$ минус число
+оценённых коэффициентов. Для выборочной дисперсии оценивается одно среднее, и,
+как показывает лемма, делитель равен $n-1$. В регрессии с $k$ регрессорами и
+свободным членом он равен $n-k-1$.
+
+\begin{remark}
+Проверка формулы для $s^2$: при $n=2$ прямая проходит ровно через две точки, все
+остатки равны нулю, и делитель $n$ дал бы $s^2 = 0$. Но две точки не несут
+информации о $\sigma^2$, и формула с $n-2$ честно даёт $0/0$.
+\end{remark}
+
+% -------------------------------------------------------------------
+\subsection{Проверка гипотез}\label{sec:tests}
+
+\textbf{Распределения Стьюдента и Фишера.} Если $Z \sim N(0,1)$ и
+$V \sim \chi^2(k)$ независимы, то
+\begin{equation}
+  \frac{Z}{\sqrt{V/k}} \sim t(k),
+  \qquad
+  \frac{Z^2}{V/k} \sim F(1,k).
+  \label{eq:t-def}
+\end{equation}
+
+\textbf{Распределение $t$-статистики.} При предпосылке 3c оценка
+\eqref{eq:bhat-eps} — линейная комбинация нормальных ошибок, поэтому с учётом
+\eqref{eq:unbiased} и \eqref{eq:var-b}
+\[
+  \bh \sim N\Bigl(\beta,\ \frac{\sigma^2}{\sum x_t^2}\Bigr),
+  \qquad
+  Z = \frac{\bh - \beta}{\sigma\big/\sqrt{\sum x_t^2}} \sim N(0,1).
+\]
+Кроме того, можно показать, что $V = (n-2)s^2/\sigma^2 \sim \chi^2(n-2)$ и не
+зависит от $\bh$. Подставив $Z$ и $V$ в \eqref{eq:t-def} с $k = n-2$, получаем
+статистику, в которой неизвестное $\sigma$ сокращается:
+\begin{equation}
+  \frac{Z}{\sqrt{V/(n-2)}}
+  = \frac{(\bh - \beta)\sqrt{\sum x_t^2}\big/\sigma}{s/\sigma}
+  = \frac{\bh - \beta}{s\big/\sqrt{\sum x_t^2}}
+  = \frac{\bh - \beta}{s_{\bh}} \sim t(n-2).
+  \label{eq:t-stat}
+\end{equation}
+Замена $\sigma$ на $s$ добавляет случайность в знаменатель, поэтому
+распределение — Стьюдента, а не нормальное, с тем же числом степеней свободы
+$n-2$, что и у $s^2$.
+
+\textbf{$t$-тест.} Гипотеза $H_0\colon \beta = \beta_0$ проверяется статистикой
+\begin{equation}
+  t = \frac{\bh - \beta_0}{s_{\bh}},
+  \label{eq:ttest}
+\end{equation}
+которая при $H_0$ по \eqref{eq:t-stat} имеет распределение $t(n-2)$. Гипотеза
+отвергается, если $|t| > t_{\text{кр}}$; на 5\,\%-ном уровне значимости
+$t_{\text{кр}} = t_{0{,}025}(n-2)$.
+
+\textbf{$F$-тест значимости регрессии.} Гипотеза $H_0\colon \beta = 0$
+проверяется статистикой
+\begin{equation}
+  F = \frac{\RSS}{\ESS/(n-2)} = \frac{R^2}{1-R^2}\,(n-2),
+  \label{eq:ftest}
+\end{equation}
+где второе равенство получено делением числителя и знаменателя на $\TSS$. По
+\eqref{eq:ss-dev} и \eqref{eq:s2}
+\[
+  F = \frac{\bh^2\sum x_t^2}{s^2} = \Bigl(\frac{\bh}{s_{\bh}}\Bigr)^2 = t^2,
+\]
+где $t$ — статистика \eqref{eq:ttest} при $\beta_0 = 0$. Поэтому при $H_0$ по
+\eqref{eq:t-def} $F \sim F(1, n-2)$, и в парной регрессии $F$-тест равносилен
+$t$-тесту гипотезы $\beta = 0$. Гипотеза отвергается, если
+$F > F_{\text{кр}}(1, n-2)$. В регрессии с $m$ регрессорами
+\[
+  F = \frac{R^2}{1-R^2}\cdot\frac{n-m-1}{m} \sim F(m,\, n-m-1).
+\]
+
+% -------------------------------------------------------------------
+\subsection{Линеаризация нелинейных моделей}\label{sec:linear}
+
+Формулы п.~\ref{sec:ols}--\ref{sec:tests} применимы к любой модели, которую
+заменой переменных и параметров можно привести к виду \eqref{eq:model}, то есть
+к модели, \emph{линейной по параметрам} и с \emph{аддитивной} ошибкой.
+Нелинейность по переменным этому не мешает. Модели с мультипликативной ошибкой
+$\varepsilon_t > 0$ линеаризуются логарифмированием:
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Модель & После логарифмирования & Регрессия \\
+\midrule
+степенная $Y = aX^{b}\varepsilon$
+  & $\ln Y = \ln a + b\ln X + \ln\varepsilon$ & $\ln Y$ на $\ln X$ \\
+показательная $Y = a\,b^{X}\varepsilon$
+  & $\ln Y = \ln a + X\ln b + \ln\varepsilon$ & $\ln Y$ на $X$ \\
+экспоненциальная $Y = a\,e^{bX}\varepsilon$
+  & $\ln Y = \ln a + bX + \ln\varepsilon$ & $\ln Y$ на $X$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Исходные параметры находят обратным преобразованием оценок: если $C$ — оценка
+свободного члена, то $a = e^{C}$, а при десятичных логарифмах $a = 10^{C}$.
+Показатель $b$ степенной модели — эластичность: рост $X$ на 1\,\% меняет $Y$ в
+среднем на $b\,\%$.
+
+Если ошибка входит аддитивно, $Y = f(X) + \varepsilon$, логарифм суммы не
+расщепляется, и модель не линеаризуется, даже когда сама функция $f$ приводится
+к линейному виду.
+
+Качество нелинейной модели оценивают по исходной переменной: подогнанные
+значения $\yh_t$ получают обратным преобразованием, а индекс детерминации
+$\rho^2 = 1 - \ESS/\TSS$ с $\ESS = \sum\bigl(Y_t - \yh_t\bigr)^2$ и ошибку
+$\overline{A}$ считают по \eqref{eq:r2} и \eqref{eq:approx}.
+\fi
+
+% ===================================================================
+\section{Задачи}
+
+% -------------------------------------------------------------------
+\problem{2.1}
+
+Наблюдения 16 пар $(X,Y)$ дали следующие результаты:
+\[
+  \textstyle\sum Y^2 = 526, \qquad \sum X^2 = 657, \qquad \sum XY = 492,
+\]
+\[
+  \textstyle\sum Y = 64, \qquad \sum X = 96 .
+\]
+Оцените регрессию $Y_t = \alpha + \beta X_t + \varepsilon_t$ и проверьте
+гипотезу, что коэффициент $\beta$ равен $1{,}0$.
+
+\begin{solution}
+\textbf{1) Суммы в отклонениях.} Здесь $n = 16$, $\overline{X} = 96/16 = 6$,
+$\overline{Y} = 64/16 = 4$. По \eqref{eq:dev-sums}
+\[
+\begin{aligned}
+  \sum x_t^2  &= 657 - \frac{96^2}{16} = 657 - 576 = 81, \\[2pt]
+  \sum x_ty_t &= 492 - \frac{96\cdot 64}{16} = 492 - 384 = 108, \\[2pt]
+  \sum y_t^2  &= 526 - \frac{64^2}{16} = 526 - 256 = 270 .
+\end{aligned}
+\]
+
+\medskip
+\textbf{2) Оценки параметров.} По \eqref{eq:ols}
+\[
+  \bh = \frac{108}{81} = \frac{4}{3} \approx 1{,}33,
+  \qquad
+  \ah = 4 - \frac{4}{3}\cdot 6 = -4 .
+\]
+
+\medskip
+\textbf{3) Оценка дисперсии ошибок.} По \eqref{eq:ss-dev} и \eqref{eq:s2}
+\[
+  \sum e_t^2 = 270 - \Bigl(\frac{4}{3}\Bigr)^2\cdot 81 = 270 - 144 = 126,
+  \qquad
+  s^2 = \frac{126}{14} = 9,
+\]
+\[
+  s_{\bh}^2 = \frac{9}{81} = \frac{1}{9},
+  \qquad
+  s_{\bh} = \frac{1}{3}.
+\]
+
+\medskip
+\textbf{4) Проверка гипотезы} $H_0\colon \beta = 1$. По \eqref{eq:ttest}
+\[
+  t = \frac{4/3 - 1}{1/3} = 1 .
+\]
+Критическое значение $t_{0{,}025}(14) = 2{,}145$. Так как $|t| = 1 < 2{,}145$,
+гипотеза $H_0$ \textbf{не отвергается} на 5\,\%-ном уровне значимости.
+\end{solution}
+
+% -------------------------------------------------------------------
+\problem{2.3}
+
+Пусть $\bh$ — оценка коэффициента наклона в регрессии $Y$ на $X$,
+а $\widehat{\gamma}$ — оценка коэффициента наклона в регрессии $X$ на $Y$.
+Покажите, что $\bh = 1/\widehat{\gamma}$ тогда и только тогда, когда $R^2 = 1$.
+
+\begin{solution}
+По \eqref{eq:ols} и замечанию в п.~\ref{sec:ols}
+\[
+  \bh = \frac{\sum x_ty_t}{\sum x_t^2},
+  \qquad
+  \widehat{\gamma} = \frac{\sum x_ty_t}{\sum y_t^2},
+\]
+откуда по \eqref{eq:r2-dev}
+\[
+  \bh\,\widehat{\gamma} = \frac{\bigl(\sum x_ty_t\bigr)^2}{\sum x_t^2\sum y_t^2} = R^2 .
+\]
+Следовательно,
+$\bh = 1/\widehat{\gamma} \iff \bh\,\widehat{\gamma} = 1 \iff R^2 = 1$.
+
+\medskip
+\textbf{Геометрический смысл.} $R^2 = 1$ означает $\ESS = 0$, то есть все точки
+$(X_t, Y_t)$ лежат на одной прямой. Только в этом случае прямые регрессий $Y$ на
+$X$ и $X$ на $Y$ совпадают; в остальных случаях $\bh\,\widehat{\gamma} = R^2 < 1$.
+\end{solution}
+
+% -------------------------------------------------------------------
+\problem{2.5}
+
+Могут ли следующие уравнения быть преобразованы в уравнения, линейные
+по параметрам?
+\begin{enumerate}[label=\asbuk*), leftmargin=2.2em, itemsep=3pt]
+  \item $Y_i = \alpha \cdot \exp(\beta X_i)\cdot \varepsilon_i$;
+  \item $Y_i = \alpha \cdot \exp(-\beta X_i) + \varepsilon_i$;
+  \item $Y_i = \exp(\alpha + \beta X_i + \varepsilon_i)$;
+  \item $Y_i = \alpha \,/\, (\beta - X_i) + \varepsilon_i$.
+\end{enumerate}
+
+\begin{solution}
+По п.~\ref{sec:linear} модель линеаризуется, если после преобразования она
+линейна по параметрам и ошибка в ней аддитивна.
+
+\medskip
+\textbf{а)} Да. Логарифмируя (при $\varepsilon_i > 0$), получаем
+\[
+  \ln Y_i = \ln\alpha + \beta X_i + \ln\varepsilon_i ,
+\]
+то есть $Z_i = \gamma + \beta X_i + u_i$, где $Z_i = \ln Y_i$,
+$\gamma = \ln\alpha$, $u_i = \ln\varepsilon_i$.
+
+\medskip
+\textbf{в)} Да: $\ln Y_i = \alpha + \beta X_i + \varepsilon_i$, то есть
+$Z_i = \alpha + \beta X_i + \varepsilon_i$, где $Z_i = \ln Y_i$.
+
+\medskip
+\textbf{б), г)} Нет: ошибка входит аддитивно. Сами функции линеаризуются,
+\[
+  \ln\bigl(\alpha e^{-\beta X_i}\bigr) = \ln\alpha - \beta X_i,
+  \qquad
+  \frac{1}{\alpha/(\beta - X_i)} = \frac{\beta}{\alpha} - \frac{1}{\alpha}X_i,
+\]
+но после добавления $\varepsilon_i$ эти преобразования не дают модели, линейной
+по параметрам с аддитивной ошибкой.
+\end{solution}
+
+% -------------------------------------------------------------------
+\problem{2.6}
+
+Зависимая переменная в регрессии $Y_t = \alpha + \beta X_t + \varepsilon_t$
+разбивается на две компоненты: $Y_t = Y_{1t} + Y_{2t}$. Рассмотрим две регрессии
+для компонент:
+\[
+  Y_{1t} = \alpha_1 + \beta_1 X_t + \varepsilon_{1t},
+  \qquad
+  Y_{2t} = \alpha_2 + \beta_2 X_t + \varepsilon_{2t}.
+\]
+Докажите следующие соотношения для МНК-оценок параметров трёх регрессий:
+\[
+  \ah = \widehat{\alpha}_1 + \widehat{\alpha}_2,
+  \qquad
+  \bh = \widehat{\beta}_1 + \widehat{\beta}_2 .
+\]
+
+\begin{solution}
+Так как $\overline{Y} = \overline{Y}_1 + \overline{Y}_2$, отклонения тоже
+складываются: $y_t = y_{1t} + y_{2t}$. По \eqref{eq:ols}
+\[
+  \bh = \frac{\sum x_t\bigl(y_{1t} + y_{2t}\bigr)}{\sum x_t^2}
+      = \frac{\sum x_ty_{1t}}{\sum x_t^2} + \frac{\sum x_ty_{2t}}{\sum x_t^2}
+      = \widehat{\beta}_1 + \widehat{\beta}_2,
+\]
+\[
+\begin{aligned}
+  \ah &= \overline{Y} - \bh\overline{X}
+       = \bigl(\overline{Y}_1 + \overline{Y}_2\bigr)
+         - \bigl(\widehat{\beta}_1 + \widehat{\beta}_2\bigr)\overline{X} \\[4pt]
+      &= \bigl(\overline{Y}_1 - \widehat{\beta}_1\overline{X}\bigr)
+       + \bigl(\overline{Y}_2 - \widehat{\beta}_2\overline{X}\bigr)
+       = \widehat{\alpha}_1 + \widehat{\alpha}_2 .
+\end{aligned}
+\]
+\end{solution}
+
+% -------------------------------------------------------------------
+\problem{2.12}
+
+Рассмотрим модель регрессии на константу
+\[
+  Y_t = \alpha + \varepsilon_t, \qquad t = 1,\dots,n .
+\]
+\begin{enumerate}[label=\asbuk*), leftmargin=2.2em, itemsep=3pt]
+  \item Найдите оценки метода наименьших квадратов для $\alpha$ и $\sigma^2$.
+  \item Найдите дисперсию оценки $\ah$.
+  \item Покажите, что статистика $\dfrac{\ah - \alpha}{s_{\ah}}$ имеет
+        распределение $t(n-1)$.
+  \item Чему равен коэффициент детерминации $R^2$?
+\end{enumerate}
+
+\begin{solution}
+\textbf{а)} Минимизируем $S(a) = \sum(Y_t - a)^2$:
+\[
+  S'(a) = -2\sum(Y_t - a) = 0
+  \quad\Longrightarrow\quad
+  \ah = \frac{1}{n}\sum Y_t = \overline{Y};
+\]
+это минимум, так как $S''(a) = 2n > 0$. Остатки
+\[
+  e_t = Y_t - \overline{Y} = (\alpha + \varepsilon_t) - (\alpha + \overline{\varepsilon})
+      = \varepsilon_t - \overline{\varepsilon},
+\]
+поэтому по лемме \eqref{eq:lemma} $\E\sum e_t^2 = (n-1)\sigma^2$, и несмещённая
+оценка $\sigma^2$ равна
+\[
+  s^2 = \frac{1}{n-1}\sum e_t^2 = \frac{1}{n-1}\sum\bigl(Y_t - \overline{Y}\bigr)^2 .
+\]
+
+\medskip
+\textbf{б)} По \eqref{eq:D-props}, так как $\D(Y_t) = \D(\alpha + \varepsilon_t) = \sigma^2$
+и $Y_t$ некоррелированы,
+\[
+  \D(\ah) = \D\Bigl(\frac{1}{n}\sum Y_t\Bigr) = \frac{1}{n^2}\sum\D(Y_t)
+  = \frac{1}{n^2}\cdot n\sigma^2 = \frac{\sigma^2}{n},
+  \qquad
+  s_{\ah}^2 = \frac{s^2}{n}.
+\]
+
+\medskip
+\textbf{в)} При предпосылке 3c
+\[
+  \ah = \alpha + \overline{\varepsilon} \sim N\Bigl(\alpha,\ \frac{\sigma^2}{n}\Bigr),
+  \qquad
+  Z = \frac{(\ah - \alpha)\sqrt{n}}{\sigma} \sim N(0,1).
+\]
+Для нормальной выборки $V = (n-1)s^2/\sigma^2 \sim \chi^2(n-1)$ и не зависит от
+$\overline{Y}$ (теорема Фишера). По \eqref{eq:t-def} с $k = n-1$
+\[
+  \frac{Z}{\sqrt{V/(n-1)}} = \frac{(\ah - \alpha)\sqrt{n}/\sigma}{s/\sigma}
+  = \frac{\ah - \alpha}{s/\sqrt{n}} = \frac{\ah - \alpha}{s_{\ah}} \sim t(n-1).
+\]
+
+\medskip
+\textbf{г)} Подогнанные значения постоянны, $\yh_t = \ah = \overline{Y}$, поэтому
+$\RSS = \sum\bigl(\yh_t - \overline{Y}\bigr)^2 = 0$ и по \eqref{eq:r2} $R^2 = 0$.
+\end{solution}
+
+% -------------------------------------------------------------------
+\problem{2.2}
+
+Покажите, что $\bh = r_{XY}\dfrac{s_Y}{s_X}$, где $r_{XY}$ — выборочный
+коэффициент корреляции между $X$ и $Y$, а $s_X$, $s_Y$ — стандартные отклонения
+$X$ и $Y$ соответственно.
+
+\begin{solution}
+По определениям \eqref{eq:sample} и формуле \eqref{eq:ols}
+\[
+  r_{XY}\frac{s_Y}{s_X}
+  = \frac{c_{XY}}{s_Xs_Y}\cdot\frac{s_Y}{s_X}
+  = \frac{c_{XY}}{s_X^2}
+  = \frac{\sum x_ty_t/(n-1)}{\sum x_t^2/(n-1)}
+  = \frac{\sum x_ty_t}{\sum x_t^2}
+  = \bh .
+\]
+\end{solution}
+
+% -------------------------------------------------------------------
+\problem{2.8}
+
+Выведите непосредственно формулу для оценки коэффициента наклона в регрессии
+\textbf{без свободного члена}, т.\,е. найдите оценку параметра $\beta$ в регрессии
+\[
+  Y_t = \beta X_t + \varepsilon_t
+\]
+минимизацией суммы квадратов отклонений $\sum \bigl(Y_t - \yh_t\bigr)^2$.
+
+\begin{solution}
+Минимизируем
+\[
+  S(b) = \sum\bigl(Y_t - bX_t\bigr)^2 .
+\]
+Условие первого порядка
+\[
+  S'(b) = -2\sum\bigl(Y_t - bX_t\bigr)X_t = 0
+\]
+даёт МНК-оценку
+\[
+  \boxed{\ \bh = \frac{\sum X_tY_t}{\sum X_t^2}\ }
+\]
+Это минимум, так как $S''(b) = 2\sum X_t^2 > 0$.
+
+\medskip
+Свойства оценки выводятся так же, как в п.~\ref{sec:props}, с $X_t$ вместо
+$x_t$. Подставим $Y_t = \beta X_t + \varepsilon_t$:
+\[
+  \bh = \frac{\sum X_t\bigl(\beta X_t + \varepsilon_t\bigr)}{\sum X_t^2}
+      = \frac{\beta\sum X_t^2 + \sum X_t\varepsilon_t}{\sum X_t^2}
+      = \beta + \frac{\sum X_t\varepsilon_t}{\sum X_t^2}.
+\]
+Веса $X_t/\sum X_t^2$ неслучайны, поэтому по \eqref{eq:E-lin} и предпосылке~3a
+$\E\bh = \beta$, а по \eqref{eq:D-props} и предпосылкам 3a, 3b
+\[
+\begin{aligned}
+  \D(\bh) &= \D\Bigl(\beta + \frac{\sum X_t\varepsilon_t}{\sum X_t^2}\Bigr)
+           = \frac{1}{\bigl(\sum X_t^2\bigr)^2}\,\D\Bigl(\sum X_t\varepsilon_t\Bigr)
+           = \frac{1}{\bigl(\sum X_t^2\bigr)^2}\sum X_t^2\,\D(\varepsilon_t) \\[4pt]
+          &= \frac{\sigma^2\sum X_t^2}{\bigl(\sum X_t^2\bigr)^2}
+           = \frac{\sigma^2}{\sum X_t^2}.
+\end{aligned}
+\]
+
+\medskip
+Условие первого порядка здесь — единственное нормальное уравнение
+$\sum e_tX_t = 0$. Уравнения $\sum e_t = 0$ нет, так как нет свободного члена,
+поэтому доказательство тождества \eqref{eq:decomp} из п.~\ref{sec:decomp} не
+проходит, и в общем случае $\TSS \neq \RSS + \ESS$. Это понадобится в
+задаче~2.9 на следующем семинаре.
+\end{solution}
+
+% ===================================================================
+\section{Дополнительная задача}
+
+\ifsolutions   % примечание об источнике — только в решениях
+\begin{remark}
+\raggedright
+Источник отличается от основного сборника:
+\href{http://www.lib.uniyar.ac.ru/edocs/iuni/20040802.pdf}%
+{lib.uniyar.ac.ru/edocs/iuni/20040802.pdf}, «Часть 2. Решение типовых задач»,
+задача 1.
+\end{remark}
+\fi
+
+\problem{на нелинейные модели}
+
+По семи территориям Уральского региона за 2002 год известны значения двух
+признаков:
+\begin{itemize}[leftmargin=2.2em, itemsep=1pt, topsep=3pt]
+  \item $y$ — расходы на покупку продовольственных товаров в общих расходах, \%;
+  \item $x$ — среднедневная заработная плата одного работающего, руб.
+\end{itemize}
+
+\begin{center}
+\begin{tabular}{clcc}
+\toprule
+Номер & Район & $y$ & $x$ \\
+\midrule
+1 & Удмуртская респ.   & 68,8 & 45,1 \\
+2 & Свердловская обл.  & 61,2 & 59,0 \\
+3 & Башкортостан       & 59,9 & 57,2 \\
+4 & Челябинская обл.   & 56,7 & 61,8 \\
+5 & Пермская обл.      & 55,0 & 58,8 \\
+6 & Курганская обл.    & 54,3 & 47,2 \\
+7 & Оренбургская обл.  & 49,3 & 55,2 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Задание.}
+\begin{enumerate}[label=\arabic*., leftmargin=2.2em, itemsep=3pt]
+  \item Для характеристики зависимости $y$ от $x$ рассчитать параметры следующих
+        функций: 1)~линейной; 2)~степенной; 3)~показательной.
+  \item Оценить каждую модель через коэффициент детерминации $R^2$, среднюю
+        ошибку аппроксимации $\overline{A}$ и $F$-критерий Фишера.
+\end{enumerate}
+
+\begin{solution}
+\textbf{Вспомогательные величины:}
+\[
+  n = 7, \quad
+  \overline{y} = 57{,}89, \quad
+  \overline{x} = 54{,}90, \quad
+  \overline{yx} = 3166{,}05, \quad
+  \sigma_y = 5{,}74, \quad
+  \sigma_x = 5{,}86 .
+\]
+Здесь $\overline{yx} = \frac{1}{n}\sum y_tx_t$, а $\sigma$ — стандартные
+отклонения с делителем $n$. Промежуточные величины округлены; оценки рассчитаны
+по неокруглённым данным.
+
+\medskip
+\textbf{1) Линейная модель} $\widehat{y} = a + bx$. Формула для $b$ — это
+\eqref{eq:ols}, в которой числитель и знаменатель поделены на $n$:
+\[
+  b = \frac{\overline{yx} - \overline{y}\cdot\overline{x}}{\sigma_x^2} \approx -0{,}346,
+  \qquad
+  a = \overline{y} - b\,\overline{x} \approx 76{,}88,
+\]
+\[
+  \widehat{y} = 76{,}88 - 0{,}346\,x .
+\]
+С ростом среднедневной заработной платы на 1 руб. доля расходов на покупку
+продовольственных товаров снижается в среднем на 0,35 процентного пункта.
+По задаче 2.2, п.~\ref{sec:decomp} и \eqref{eq:approx}
+\[
+  r_{xy} = b\,\frac{\sigma_x}{\sigma_y} \approx -0{,}353,
+  \qquad
+  R^2 = r_{xy}^2 \approx 0{,}125,
+  \qquad
+  \overline{A} = 8{,}1\,\% .
+\]
+Связь умеренная и обратная; вариацией $x$ объясняется 12,5\,\% вариации $y$.
+
+\medskip
+\textbf{2) Степенная модель} $\widehat{y} = a\,x^{b}$. Логарифмируя по
+п.~\ref{sec:linear}, получаем $\lg y = \lg a + b\lg x$, то есть $Y = C + bX$,
+где $Y = \lg y$, $X = \lg x$, $C = \lg a$. По логарифмам данных
+($\overline{Y} = 1{,}7605$, $\overline{X} = 1{,}7370$,
+$\overline{YX} = 3{,}0572$, $\sigma_X = 0{,}0484$)
+\[
+  b = \frac{\overline{YX} - \overline{Y}\cdot\overline{X}}{\sigma_X^2} \approx -0{,}298,
+  \qquad
+  C = \overline{Y} - b\,\overline{X} \approx 2{,}279,
+\]
+\[
+  \widehat{y} = 10^{2{,}279}\,x^{-0{,}298} \approx 190{,}0\,x^{-0{,}298}.
+\]
+Рост заработной платы на 1\,\% снижает долю расходов на продовольствие в
+среднем на 0,298\,\%. По исходной переменной
+\[
+  \rho^2 = 1 - \frac{\sigma^2_{\text{ост}}}{\sigma_y^2}
+         = 1 - \frac{28{,}32}{32{,}92} \approx 0{,}140,
+  \qquad
+  \overline{A} = 8{,}0\,\% ,
+\]
+то есть степенная модель описывает связь несколько лучше линейной.
+
+\medskip
+\textbf{3) Показательная модель} $\widehat{y} = a\,b^{x}$. Логарифмируя по
+п.~\ref{sec:linear}, получаем $\lg y = \lg a + x\lg b$, то есть $Y = C + Bx$,
+где $Y = \lg y$, $C = \lg a$, $B = \lg b$. По тем же формулам для пар
+$(x_t, Y_t)$
+\[
+  B \approx -0{,}00232,
+  \qquad
+  C = \overline{Y} - B\,\overline{x} \approx 1{,}8878,
+\]
+\[
+  \widehat{y} = 10^{1{,}8878}\cdot\bigl(10^{-0{,}00232}\bigr)^{x}
+              \approx 77{,}24\cdot 0{,}9947^{\,x}.
+\]
+Рост заработной платы на 1 руб. уменьшает долю расходов на продовольствие в
+среднем в 0,9947 раза, то есть на 0,53\,\%. По исходной переменной
+$\rho^2 \approx 0{,}125$, $\overline{A} = 8{,}1\,\%$.
+
+\medskip
+\textbf{Сводка и $F$-критерий.} По \eqref{eq:ftest} при $n = 7$ статистика
+равна $F = 5R^2/(1-R^2)$, критические значения $F_{\text{кр}}(1,5) = 6{,}61$ на
+уровне 5\,\% и $16{,}26$ на уровне 1\,\%.
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+Модель & $R^2$ (или $\rho^2$) & $\overline{A}$ & $F_{\text{факт}}$ \\
+\midrule
+Линейная       & 0,125 & 8,1\,\% & 0,71 \\
+Степенная      & 0,140 & 8,0\,\% & 0,81 \\
+Показательная  & 0,125 & 8,1\,\% & 0,71 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Во всех трёх случаях $F_{\text{факт}} < F_{\text{кр}} = 6{,}61$, поэтому
+гипотеза $H_0$ о статистической незначимости уравнения \textbf{не отвергается}:
+ни одна из моделей не значима на 5\,\%-ном уровне. Формально лучшая из трёх —
+степенная (наибольший $\rho^2$, наименьшая $\overline{A}$), но её преимущество
+в пределах погрешности. Причина — слабая связь и очень малое число наблюдений
+($n = 7$).
+
+\begin{remark}
+В исходном пособии в разборе линейной модели написано, что
+$F_{\text{факт}} > F_{\text{кр}}$ при $\alpha = 5\,\%$ и «гипотеза $H_0$
+не принимается, что говорит о значимости уравнения регрессии в целом».
+Это ошибка: там же приведено $F_{\text{факт}} = 0{,}714$, а
+$F_{\text{кр}} = 6{,}61$, то есть $F_{\text{факт}} < F_{\text{кр}}$ и уравнение
+\emph{незначимо}. Двумя строками ниже пособие само себе противоречит, верно
+заключая обратное для $\alpha = 1\,\%$. Хорошее место, чтобы на семинаре
+разобрать, в какую сторону читается $F$-тест.
+\end{remark}
+\end{solution}
