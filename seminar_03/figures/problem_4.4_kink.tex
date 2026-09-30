@@ -1,0 +1,61 @@
+% ===================================================================
+%  Задача 4.4, п. 2: разные предельные склонности ниже и выше
+%  порогового дохода y*. Функция потребления непрерывна, в точке y*
+%  у неё излом.
+%      c_t = alpha + beta*y_t + gamma*(y_t - y*)*s_t + eps_t,
+%      s_t = 1 при y_t > y*.
+%  Компилировать: xelatex problem_4.4_kink.tex
+% ===================================================================
+\documentclass[border=6pt]{standalone}
+\input{figure_preamble}
+
+\begin{document}
+\begin{tikzpicture}[>=stealth, line join=round, x=0.9cm, y=0.9cm]
+  % параметры картинки: alpha = 1, beta = 0.6, gamma = -0.3, y* = 4
+  %   c(y*) = 3.4;  c(8) по beta: 5.8;  c(8) с изломом: 4.6
+  \draw[->] (0,0) -- (8.6,0) node[anchor=north] {$y$};
+  \draw[->] (0,0) -- (0,6.6) node[anchor=east]  {$c$};
+  \node[anchor=north east] at (0,0) {$0$};
+
+  % области s = 0 и s = 1
+  \fill[black!4] (4,0) rectangle (8.3,6.4);
+  \draw[dotted, black!55] (4,0) -- (4,6.4);
+  \node[anchor=north] at (4,0) {$y^{*}$};
+  \node[black!60, font=\small] at (2.0,6.1) {$s_t = 0$};
+  \node[black!60, font=\small] at (6.2,6.1) {$s_t = 1$};
+
+  % продолжение прямой без излома (если бы gamma = 0)
+  \draw[dashed, black!55] (4,3.4) -- (8,5.8)
+        node[anchor=west] {$\gamma = 0$: \ наклон $\beta$};
+
+  % функция потребления: до y* наклон beta, после — beta + gamma
+  \draw[very thick, accent]  (0,1.0) -- (4,3.4);
+  \draw[very thick, solbar]  (4,3.4) -- (8,4.6)
+        node[anchor=west] {наклон $\beta + \gamma$};
+  \fill (4,3.4) circle (1.6pt);
+  \fill[accent] (0,1.0) circle (1.5pt);
+  \node[anchor=east, accent] at (0,1.0) {$\alpha$};
+
+  % треугольники приращений
+  \draw[black!60] (1.0,1.6) -- (3.0,1.6) -- (3.0,2.8);
+  \node[anchor=north, black!70] at (2.0,1.6) {\small $\Delta y$};
+  \node[anchor=west,  black!70] at (3.0,2.2) {\small $\beta\,\Delta y$};
+  \draw[black!60] (5.0,3.7) -- (7.0,3.7) -- (7.0,4.3);
+  \node[anchor=north, black!70] at (6.0,3.7) {\small $\Delta y$};
+  \node[anchor=west,  black!70, font=\small] at (7.0,3.95)
+        {$(\beta+\gamma)\,\Delta y$};
+
+  % расхождение с прямой без излома растёт как gamma*(y - y*)
+  \draw[<->, thick, notebar] (8.0,4.6) -- (8.0,5.8)
+        node[midway, anchor=west] {$|\gamma|\,(y - y^{*})$};
+
+  % подпись
+  \node[anchor=north west, align=left, font=\small\itshape, text width=13cm]
+    at (-0.6,-0.9)
+    {Ниже $y^{*}$ предельная склонность равна $\beta$, выше — $\beta + \gamma$
+     (на рисунке $\gamma < 0$: богатые тратят меньшую долю прироста дохода).
+     Благодаря множителю $(y_t - y^{*})$ добавка в точке $y^{*}$ равна нулю,
+     поэтому функция не рвётся, а только ломается. Проверка:
+     $H_0\colon \gamma = 0$ — излома нет, точки лежат на пунктирной прямой.};
+\end{tikzpicture}
+\end{document}

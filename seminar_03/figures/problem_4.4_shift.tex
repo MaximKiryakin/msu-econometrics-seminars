@@ -1,0 +1,58 @@
+% ===================================================================
+%  Задача 4.4, п. 1: сдвиг функции потребления при переходе
+%  от города к селу. Наклон (предельная склонность) общий,
+%  свободный член отличается на gamma.
+%      c_t = alpha + beta*y_t + gamma*r_t + eps_t
+%  Компилировать: xelatex problem_4.4_shift.tex
+% ===================================================================
+\documentclass[border=6pt]{standalone}
+\input{figure_preamble}
+
+\begin{document}
+\begin{tikzpicture}[>=stealth, line join=round, x=0.9cm, y=0.9cm]
+  % параметры картинки: alpha = 1, beta = 0.5, gamma = 1.2, y0 = 3
+  \draw[->] (0,0) -- (8.6,0) node[anchor=north] {$y$};
+  \draw[->] (0,0) -- (0,6.6) node[anchor=east]  {$c$};
+  \node[anchor=north east] at (0,0) {$0$};
+
+  % две функции потребления: город (r = 0) и село (r = 1)
+  \draw[very thick, accent]  (0,1.0) -- (8,5.0)
+        node[anchor=west] {город, $r_t = 0$: \ $c = \alpha + \beta y$};
+  \draw[very thick, solbar]  (0,2.2) -- (8,6.2)
+        node[anchor=west] {село, $r_t = 1$: \ $c = (\alpha + \gamma) + \beta y$};
+
+  % свободные члены и сдвиг gamma
+  \fill[accent] (0,1.0) circle (1.5pt);
+  \fill[solbar] (0,2.2) circle (1.5pt);
+  \node[anchor=east, accent] at (0,1.0) {$\alpha$};
+  \node[anchor=east, solbar] at (0,2.2) {$\alpha + \gamma$};
+  \draw[<->, thick] (1.0,1.5) -- (1.0,2.7)
+        node[midway, anchor=west] {$\gamma$};
+
+  % одинаковый наклон: треугольники приращений (у села — над прямой,
+  % у города — под ней, чтобы подписи не налезали на соседнюю линию)
+  \draw[black!60] (4.5,4.45) -- (4.5,5.45) -- (6.5,5.45);
+  \node[anchor=east,  black!70] at (4.5,4.95) {\small $\beta\,\Delta y$};
+  \node[anchor=south, black!70] at (5.5,5.45) {\small $\Delta y$};
+  \draw[black!60] (5.0,3.5) -- (7.0,3.5) -- (7.0,4.5);
+  \node[anchor=north, black!70] at (6.0,3.5) {\small $\Delta y$};
+  \node[anchor=west,  black!70] at (7.0,4.0) {\small $\beta\,\Delta y$};
+
+  % средняя склонность при одном и том же доходе y0 — наклоны лучей из нуля
+  \draw[dotted, black!55] (3,0) -- (3,3.7);
+  \node[anchor=north] at (3,0) {$y_0$};
+  \draw[dashed, accent]  (0,0) -- (3,2.5);
+  \draw[dashed, solbar]  (0,0) -- (3,3.7);
+  \fill[accent] (3,2.5) circle (1.5pt);
+  \fill[solbar] (3,3.7) circle (1.5pt);
+
+  % подпись
+  \node[anchor=north west, align=left, font=\small\itshape, text width=13cm]
+    at (-0.6,-0.9)
+    {Предельная склонность $\partial c/\partial y = \beta$ одинакова
+     (треугольники приращений равны). Средняя склонность $c/y$ — наклон
+     пунктирного луча из нуля — при одном и том же доходе $y_0$ различается:
+     $\beta + (\alpha+\gamma)/y_0$ у села против $\beta + \alpha/y_0$ у города.
+     Проверка: $H_0\colon \gamma = 0$, $t$-тест с $n-3$ степенями свободы.};
+\end{tikzpicture}
+\end{document}
