@@ -1,0 +1,268 @@
+% Editable vector illustrations for seminar 7 (TikZ).
+% Coordinates of the residual plots (problem 6.6), computed from the task data.
+\newcommand{\olsTimeCoordinates}{(1.000000,-0.070722) (2.000000,-0.411736) (3.000000,-0.419468) (4.000000,-0.106693) (5.000000,-0.637064) (6.000000,-0.136421) (7.000000,0.065031) (8.000000,-0.022058) (9.000000,0.143031) (10.000000,0.031247) (11.000000,0.121186) (12.000000,0.179866) (13.000000,-0.004311) (14.000000,0.066977) (15.000000,-0.134230) (16.000000,0.051990) (17.000000,0.056645) (18.000000,-0.082867) (19.000000,-0.061657) (20.000000,0.277906) (21.000000,0.099646) (22.000000,0.571734) (23.000000,0.139581) (24.000000,0.282384)}
+\newcommand{\arTimeCoordinates}{(2.000000,-0.399915) (3.000000,-0.264760) (4.000000,0.066042) (5.000000,-0.612357) (6.000000,0.196608) (7.000000,0.140855) (8.000000,-0.066946) (9.000000,0.115915) (10.000000,-0.025101) (11.000000,0.077717) (12.000000,0.131712) (13.000000,-0.080380) (14.000000,0.081664) (15.000000,-0.203237) (16.000000,0.141121) (17.000000,0.012521) (18.000000,-0.093095) (19.000000,-0.027291) (20.000000,0.262160) (21.000000,0.007329) (22.000000,0.471971) (23.000000,-0.106096) (24.000000,0.173564)}
+
+\newenvironment{seminarvisual}{\par\medskip\noindent\begin{minipage}{\linewidth}\centering}
+  {\end{minipage}\par\medskip}
+\newcounter{visualfig}
+\newcommand{\visualcaption}[1]{\par\smallskip\refstepcounter{visualfig}%
+  {\small\textbf{Рисунок~\thevisualfig.}\ #1\par}}
+
+\newcommand{\dwvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=3cm,y=1cm,font=\small]
+  \fill[accent!15] (0,0) rectangle (1.27,.6);
+  \fill[notebar!25] (1.27,0) rectangle (1.45,.6);
+  \fill[solbar!12] (1.45,0) rectangle (4,.6);
+  \draw[->] (0,0)--(4.1,0) node[right] {DW};
+  \draw[dashed] (1.27,0)--(1.27,.8);
+  \draw[dashed] (1.45,0)--(1.45,.8);
+  \node[anchor=north east] at (1.27,-.12) {$d_L=1{,}27$};
+  \node[anchor=north west] at (1.45,-.12) {$d_U=1{,}45$};
+  \node[below] at (0,0) {0}; \node[below] at (4,0) {4};
+  \node at (.60,.3) {Отвергаем $H_0$};
+  \node at (2.75,.3) {Не отвергаем $H_0$};
+  \node[anchor=south west] at (1.5,1.25) {Зона неопределённости};
+  \draw[->,notebar] (1.65,1.2)--(1.36,.65);
+  \draw[->,very thick,accent] (1.103,1.08)--(1.103,.64);
+  \node[anchor=south east,text=accent] at (1.13,1.08) {$\mathrm{DW}=1{,}103$};
+\end{tikzpicture}
+\visualcaption{Задача 6.6: $H_0\!:\rho=0$ против $H_1\!:\rho>0$,
+уровень 5\,\%. Наблюдаемая статистика попадает в область отвержения.
+Правая область относится только к этой односторонней проверке.}
+\end{seminarvisual}}
+
+\newcommand{\arresidualvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=.235cm,y=2.3cm,font=\small]
+  \foreach \shift/\title in {0/{Исходные остатки $e_t$},30/{Инновации после AR(1)}} {
+    \begin{scope}[xshift=\shift*.235cm]
+      \node[font=\small\bfseries] at (12.5,.88) {\title};
+      \draw[->] (0,-.65)--(0,.70);
+      \draw[gray,dashed] (0,0)--(24,0);
+      \draw[->] (0,-.65)--(25,-.65) node[right] {$t$};
+      \foreach \xx in {1,6,12,18,24}
+        \draw (\xx,-.65)--(\xx,-.69) node[below] {\xx};
+      \foreach \yy/\lab in {-.5/{-0{,}5},0/0,.5/{0{,}5}}
+        \node[left] at (0,\yy) {$\lab$};
+      \ifnum\shift=0
+        \draw[accent,thick] plot[mark=*,mark size=1.7pt] coordinates {\olsTimeCoordinates};
+      \else
+        \draw[solbar,thick] plot[mark=*,mark size=1.7pt] coordinates {\arTimeCoordinates};
+      \fi
+    \end{scope}
+  }
+\end{tikzpicture}
+\visualcaption{Данные задачи 6.6, одинаковый масштаб по вертикали.
+Слева $\mathrm{DW}=1{,}103$, справа $2{,}162$.
+Справа показаны $\widehat\eta_t=\widehat\varepsilon_t-
+\widehat\rho\widehat\varepsilon_{t-1}$, поэтому ряд начинается с $t=2$.
+График дополняет диагностику, но не доказывает независимость.}
+\end{seminarvisual}}
+
+\newcommand{\intervalvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=14cm,y=1cm,font=\small]
+  % Plot x = beta + 1.1 to keep node positions compact.
+  \draw[->] (0,0)--(.63,0) node[right] {$\beta_2$};
+  \foreach \xx/\lab in {0/{-1{,}1},.1/{-1{,}0},.2/{-0{,}9},.3/{-0{,}8},.4/{-0{,}7},.5/{-0{,}6},.6/{-0{,}5}}
+    \draw (\xx,0)--(\xx,-.07) node[below] {$\lab$};
+  \node[anchor=east,align=right] at (-.02,1.65) {МНК};
+  \node[anchor=east,align=right] at (-.02,.65) {С AR(1)};
+  \draw[accent,line width=1.3pt] (.086,1.65)--(.556,1.65);
+  \draw[solbar,line width=1.3pt] (.075,.65)--(.462,.65);
+  \foreach \xx in {.086,.556} \draw[accent] (\xx,1.55)--(\xx,1.75);
+  \foreach \xx in {.075,.462} \draw[solbar] (\xx,.55)--(\xx,.75);
+  \fill[accent] (.3209,1.65) circle (2.7pt);
+  \fill[solbar] (.2688,.65) circle (2.7pt);
+  \node[above] at (.086,1.75) {$-1{,}014$};
+  \node[above] at (.556,1.75) {$-0{,}544$};
+  \node[above] at (.075,.75) {$-1{,}025$};
+  \node[above] at (.462,.75) {$-0{,}638$};
+\end{tikzpicture}
+\visualcaption{Точки — оценки $\beta_2$, отрезки — 95\,\%-ные интервалы.
+Интервал МНК построен при нарушенной предпосылке независимости;
+интервал с AR(1) — приближённый.}
+\end{seminarvisual}}
+
+\newcommand{\autocorrvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=.3cm,y=1.1cm,font=\small]
+  \foreach \shift/\title in {0/{Нет автокорреляции},26/{Положительная автокорреляция}} {
+    \begin{scope}[xshift=\shift*.3cm]
+      \node[font=\small\bfseries] at (10.5,1.25) {\title};
+      \draw[->] (0,-1.05)--(0,1.05) node[left] {$e_t$};
+      \draw[->,gray] (0,0)--(21.5,0) node[right] {$t$};
+      \ifnum\shift=0
+        \draw[accent,thick] plot[mark=*,mark size=1.5pt] coordinates
+          {(1,.5) (2,-.6) (3,.2) (4,.7) (5,-.3) (6,-.8) (7,.4) (8,-.2) (9,.6) (10,-.5)
+           (11,.1) (12,.8) (13,-.7) (14,.3) (15,-.4) (16,.5) (17,-.1) (18,-.6) (19,.7) (20,-.3)};
+      \else
+        \draw[accent,thick] plot[mark=*,mark size=1.5pt] coordinates
+          {(1,.3) (2,.5) (3,.7) (4,.6) (5,.4) (6,.1) (7,-.2) (8,-.5) (9,-.7) (10,-.8)
+           (11,-.6) (12,-.3) (13,.1) (14,.4) (15,.6) (16,.8) (17,.5) (18,.2) (19,-.2) (20,-.4)};
+      \fi
+    \end{scope}
+  }
+\end{tikzpicture}
+\visualcaption{Схематический пример. Слева знаки остатков меняются часто и
+беспорядочно. Справа соседние остатки похожи: остатки долго остаются
+одного знака, рядов одинаковых знаков мало, разности $e_t-e_{t-1}$ малы.}
+\end{seminarvisual}}
+
+\newcommand{\dwzonesvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=3.6cm,y=1cm,font=\small]
+  \fill[accent!15]  (0,0)   rectangle (.9,.7);
+  \fill[notebar!25] (.9,0) rectangle (1.4,.7);
+  \fill[solbar!12]  (1.4,0) rectangle (2.6,.7);
+  \fill[notebar!25] (2.6,0) rectangle (3.1,.7);
+  \fill[accent!15]  (3.1,0) rectangle (4,.7);
+  \draw[->] (0,0)--(4.12,0) node[right] {DW};
+  \foreach \xx/\lab in {0/0,.9/d_L,1.4/d_U,2/2,2.6/4-d_U,3.1/4-d_L,4/4}
+    \draw (\xx,0)--(\xx,-.1) node[below] {$\lab$};
+  \node[align=center] at (.45,.35) {положительная\\[-2pt]автокорреляция};
+  \node[align=center] at (2,.35) {автокорреляции нет};
+  \node[align=center] at (3.55,.35) {отрицательная\\[-2pt]автокорреляция};
+  \node[anchor=south,align=center] at (1.15,.8) {вывода\\[-2pt]нет};
+  \node[anchor=south,align=center] at (2.85,.8) {вывода\\[-2pt]нет};
+  \node[anchor=south,text=gray] at (.45,.8) {$\rho\approx 1$};
+  \node[anchor=south,text=gray] at (2,.8) {$\rho\approx 0$};
+  \node[anchor=south,text=gray] at (3.55,.8) {$\rho\approx -1$};
+\end{tikzpicture}
+\visualcaption{\label{fig:dwzones}Пять зон для статистики DW. Границы $d_L$ и $d_U$ берутся
+из таблицы по $n$ и числу регрессоров без константы; правая половина
+симметрична левой относительно $\mathrm{DW}=2$.}
+\end{seminarvisual}}
+
+\newcommand{\coloopvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[font=\small,box/.style={draw=accent,rounded corners=2pt,
+  fill=accent!5,align=center,text width=3.05cm,minimum height=1.05cm,inner sep=2pt}]
+  \node[box] (a) at (0,0) {1) МНК исходной\\модели, $e_t$};
+  \node[box] (b) at (3.85,0) {2) оценка $\widehat\rho$\\по остаткам $e_t$};
+  \node[box] (c) at (7.7,0) {3) квазиразности:\\МНК $\to\widehat\beta_1$, $\widehat\beta_2$};
+  \node[box,text width=3.55cm] (d) at (11.8,0) {4) новые остатки\\$e_t=y_t-\widehat\beta_1-\widehat\beta_2x_t$};
+  \draw[->,thick,accent] (a)--(b);
+  \draw[->,thick,accent] (b)--(c);
+  \draw[->,thick,accent] (c)--(d);
+  \draw[->,thick,notebar] (d.south) -- ++(0,-.38) -| node[pos=.25,fill=white,inner sep=1.5pt]
+    {пока $\widehat\rho$ меняется} (b.south);
+\end{tikzpicture}
+\visualcaption{Итерации Кохрейна--Оркатта: шаги 2--4 повторяются, пока
+$\widehat\rho$ меняется.}
+\end{seminarvisual}}
+
+\newcommand{\runsvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=.57cm,y=.62cm,font=\small]
+  % Problem 6.6: signs of OLS residuals e_1..e_24 and runs.
+  \foreach \i/\sg in {1/m,2/m,3/m,4/m,5/m,6/m,7/p,8/m,9/p,10/p,11/p,12/p,13/m,14/p,15/m,16/p,17/p,18/m,19/m,20/p,21/p,22/p,23/p,24/p} {
+    \if\sg p
+      \fill[solbar!22] (\i-1,0) rectangle (\i,1); \node at (\i-.5,.5) {$+$};
+    \else
+      \fill[accent!18] (\i-1,0) rectangle (\i,1); \node at (\i-.5,.5) {$-$};
+    \fi
+    \node[text=gray,font=\scriptsize] at (\i-.5,1.35) {\i};
+    \draw[white,thick] (\i-1,0)--(\i-1,1);
+  }
+  \foreach \a/\b/\k in {1/6/1,7/7/2,8/8/3,9/12/4,13/13/5,14/14/6,15/15/7,16/17/8,18/19/9,20/24/10} {
+    \draw[notebar,thick] (\a-1+.1,-.12)--(\a-1+.1,-.3)--(\b-.1,-.3)--(\b-.1,-.12);
+    \node[text=notebar,font=\scriptsize\bfseries] at ({(\a+\b-1)/2},-.68) {\k};
+  }
+  \node[anchor=east] at (-.15,.5) {знак $e_t$};
+  \node[anchor=east,text=gray,font=\scriptsize] at (-.15,1.35) {$t$};
+  \node[anchor=east,text=notebar] at (-.15,-.68) {ряд};
+\end{tikzpicture}
+\visualcaption{Задача 6.6: знаки остатков МНК в порядке времени. Скобки
+отмечают ряды одинаковых знаков; их $k=10$. Плюсов $n_1=13$, минусов
+$n_2=11$.}
+\end{seminarvisual}}
+
+\newcommand{\runsexamplevisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=.5cm,y=.55cm,font=\small]
+  % All 6 arrangements of n1 = 2 pluses and n2 = 2 minuses; brackets mark runs.
+  \begin{scope}[shift={(0.00,0.00)}]
+    \fill[solbar!22] (0,0) rectangle (1,1); \node at (0.5,.5) {$+$};
+    \fill[solbar!22] (1,0) rectangle (2,1); \node at (1.5,.5) {$+$};
+    \fill[accent!18] (2,0) rectangle (3,1); \node at (2.5,.5) {$-$};
+    \fill[accent!18] (3,0) rectangle (4,1); \node at (3.5,.5) {$-$};
+    \draw[white,thick] (1,0)--(1,1);
+    \draw[white,thick] (2,0)--(2,1);
+    \draw[white,thick] (3,0)--(3,1);
+    \draw[notebar,thick] (0.10,-.12)--(0.10,-.32)--(1.90,-.32)--(1.90,-.12);
+    \draw[notebar,thick] (2.10,-.12)--(2.10,-.32)--(3.90,-.32)--(3.90,-.12);
+    \node[font=\small] at (2,-.85) {$k=2$};
+  \end{scope}
+  \begin{scope}[shift={(5.56,0.00)}]
+    \fill[solbar!22] (0,0) rectangle (1,1); \node at (0.5,.5) {$+$};
+    \fill[accent!18] (1,0) rectangle (2,1); \node at (1.5,.5) {$-$};
+    \fill[solbar!22] (2,0) rectangle (3,1); \node at (2.5,.5) {$+$};
+    \fill[accent!18] (3,0) rectangle (4,1); \node at (3.5,.5) {$-$};
+    \draw[white,thick] (1,0)--(1,1);
+    \draw[white,thick] (2,0)--(2,1);
+    \draw[white,thick] (3,0)--(3,1);
+    \draw[notebar,thick] (0.10,-.12)--(0.10,-.32)--(0.90,-.32)--(0.90,-.12);
+    \draw[notebar,thick] (1.10,-.12)--(1.10,-.32)--(1.90,-.32)--(1.90,-.12);
+    \draw[notebar,thick] (2.10,-.12)--(2.10,-.32)--(2.90,-.32)--(2.90,-.12);
+    \draw[notebar,thick] (3.10,-.12)--(3.10,-.32)--(3.90,-.32)--(3.90,-.12);
+    \node[font=\small] at (2,-.85) {$k=4$};
+  \end{scope}
+  \begin{scope}[shift={(11.12,0.00)}]
+    \fill[solbar!22] (0,0) rectangle (1,1); \node at (0.5,.5) {$+$};
+    \fill[accent!18] (1,0) rectangle (2,1); \node at (1.5,.5) {$-$};
+    \fill[accent!18] (2,0) rectangle (3,1); \node at (2.5,.5) {$-$};
+    \fill[solbar!22] (3,0) rectangle (4,1); \node at (3.5,.5) {$+$};
+    \draw[white,thick] (1,0)--(1,1);
+    \draw[white,thick] (2,0)--(2,1);
+    \draw[white,thick] (3,0)--(3,1);
+    \draw[notebar,thick] (0.10,-.12)--(0.10,-.32)--(0.90,-.32)--(0.90,-.12);
+    \draw[notebar,thick] (1.10,-.12)--(1.10,-.32)--(2.90,-.32)--(2.90,-.12);
+    \draw[notebar,thick] (3.10,-.12)--(3.10,-.32)--(3.90,-.32)--(3.90,-.12);
+    \node[font=\small] at (2,-.85) {$k=3$};
+  \end{scope}
+  \begin{scope}[shift={(16.68,0.00)}]
+    \fill[accent!18] (0,0) rectangle (1,1); \node at (0.5,.5) {$-$};
+    \fill[solbar!22] (1,0) rectangle (2,1); \node at (1.5,.5) {$+$};
+    \fill[solbar!22] (2,0) rectangle (3,1); \node at (2.5,.5) {$+$};
+    \fill[accent!18] (3,0) rectangle (4,1); \node at (3.5,.5) {$-$};
+    \draw[white,thick] (1,0)--(1,1);
+    \draw[white,thick] (2,0)--(2,1);
+    \draw[white,thick] (3,0)--(3,1);
+    \draw[notebar,thick] (0.10,-.12)--(0.10,-.32)--(0.90,-.32)--(0.90,-.12);
+    \draw[notebar,thick] (1.10,-.12)--(1.10,-.32)--(2.90,-.32)--(2.90,-.12);
+    \draw[notebar,thick] (3.10,-.12)--(3.10,-.32)--(3.90,-.32)--(3.90,-.12);
+    \node[font=\small] at (2,-.85) {$k=3$};
+  \end{scope}
+  \begin{scope}[shift={(22.24,0.00)}]
+    \fill[accent!18] (0,0) rectangle (1,1); \node at (0.5,.5) {$-$};
+    \fill[solbar!22] (1,0) rectangle (2,1); \node at (1.5,.5) {$+$};
+    \fill[accent!18] (2,0) rectangle (3,1); \node at (2.5,.5) {$-$};
+    \fill[solbar!22] (3,0) rectangle (4,1); \node at (3.5,.5) {$+$};
+    \draw[white,thick] (1,0)--(1,1);
+    \draw[white,thick] (2,0)--(2,1);
+    \draw[white,thick] (3,0)--(3,1);
+    \draw[notebar,thick] (0.10,-.12)--(0.10,-.32)--(0.90,-.32)--(0.90,-.12);
+    \draw[notebar,thick] (1.10,-.12)--(1.10,-.32)--(1.90,-.32)--(1.90,-.12);
+    \draw[notebar,thick] (2.10,-.12)--(2.10,-.32)--(2.90,-.32)--(2.90,-.12);
+    \draw[notebar,thick] (3.10,-.12)--(3.10,-.32)--(3.90,-.32)--(3.90,-.12);
+    \node[font=\small] at (2,-.85) {$k=4$};
+  \end{scope}
+  \begin{scope}[shift={(27.80,0.00)}]
+    \fill[accent!18] (0,0) rectangle (1,1); \node at (0.5,.5) {$-$};
+    \fill[accent!18] (1,0) rectangle (2,1); \node at (1.5,.5) {$-$};
+    \fill[solbar!22] (2,0) rectangle (3,1); \node at (2.5,.5) {$+$};
+    \fill[solbar!22] (3,0) rectangle (4,1); \node at (3.5,.5) {$+$};
+    \draw[white,thick] (1,0)--(1,1);
+    \draw[white,thick] (2,0)--(2,1);
+    \draw[white,thick] (3,0)--(3,1);
+    \draw[notebar,thick] (0.10,-.12)--(0.10,-.32)--(1.90,-.32)--(1.90,-.12);
+    \draw[notebar,thick] (2.10,-.12)--(2.10,-.32)--(3.90,-.32)--(3.90,-.12);
+    \node[font=\small] at (2,-.85) {$k=2$};
+  \end{scope}
+\end{tikzpicture}
+\visualcaption{Все 6 расстановок двух плюсов и двух минусов; скобки отмечают
+ряды. При $H_0$ каждая расстановка встречается с вероятностью $1/6$.}
+\end{seminarvisual}}
