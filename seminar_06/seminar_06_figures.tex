@@ -1,0 +1,298 @@
+% Editable vector illustrations for seminar 6 (TikZ).
+% Coordinates of the residual plots (problems 6.6 and 6.7), computed from the task data.
+\newcommand{\olsTimeCoordinates}{(1.000000,-0.070722) (2.000000,-0.411736) (3.000000,-0.419468) (4.000000,-0.106693) (5.000000,-0.637064) (6.000000,-0.136421) (7.000000,0.065031) (8.000000,-0.022058) (9.000000,0.143031) (10.000000,0.031247) (11.000000,0.121186) (12.000000,0.179866) (13.000000,-0.004311) (14.000000,0.066977) (15.000000,-0.134230) (16.000000,0.051990) (17.000000,0.056645) (18.000000,-0.082867) (19.000000,-0.061657) (20.000000,0.277906) (21.000000,0.099646) (22.000000,0.571734) (23.000000,0.139581) (24.000000,0.282384)}
+\newcommand{\arTimeCoordinates}{(2.000000,-0.399915) (3.000000,-0.264760) (4.000000,0.066042) (5.000000,-0.612357) (6.000000,0.196608) (7.000000,0.140855) (8.000000,-0.066946) (9.000000,0.115915) (10.000000,-0.025101) (11.000000,0.077717) (12.000000,0.131712) (13.000000,-0.080380) (14.000000,0.081664) (15.000000,-0.203237) (16.000000,0.141121) (17.000000,0.012521) (18.000000,-0.093095) (19.000000,-0.027291) (20.000000,0.262160) (21.000000,0.007329) (22.000000,0.471971) (23.000000,-0.106096) (24.000000,0.173564)}
+\newcommand{\olsIncomeCoordinates}{(0.000000,-0.680448),(0.000000,-0.188018),(0.000000,0.550625),(1.000000,-0.884880),(1.000000,-0.146237),(1.000000,0.838622),(2.000000,-0.596884),(2.000000,0.141760),(2.000000,1.619048),(3.000000,-0.801317),(3.000000,-0.062673),(3.000000,0.675971),(4.000000,-0.759535),(4.000000,-0.267106),(4.000000,0.225324),(5.000000,-1.210182),(5.000000,0.020891),(5.000000,1.005749),(6.000000,-1.660830),(6.000000,0.062673),(6.000000,1.786175),(7.000000,-1.372833),(7.000000,0.104455),(7.000000,1.089313),(8.000000,-0.838622),(8.000000,0.638666),(8.000000,2.115954),(9.000000,-2.027913),(9.000000,-0.550625),(9.000000,1.172877)}
+\newcommand{\wlsIncomeCoordinates}{(0.000000,-0.960880),(0.000000,-0.250066),(0.000000,0.816154),(1.000000,-1.164000),(1.000000,-0.179797),(1.000000,1.132475),(2.000000,-0.728835),(2.000000,0.185069),(2.000000,2.012875),(3.000000,-0.920342),(3.000000,-0.067366),(3.000000,0.785611),(4.000000,-0.821356),(4.000000,-0.288246),(4.000000,0.244864),(5.000000,-1.235766),(5.000000,0.018611),(5.000000,1.022113),(6.000000,-1.604131),(6.000000,0.054434),(6.000000,1.713000),(7.000000,-1.260318),(7.000000,0.086487),(7.000000,0.984357),(8.000000,-0.737642),(8.000000,0.541823),(8.000000,1.821287),(9.000000,-1.686372),(9.000000,-0.467834),(9.000000,0.953793)}
+
+\newenvironment{seminarvisual}{\par\medskip\noindent\begin{minipage}{\linewidth}\centering}
+  {\end{minipage}\par\medskip}
+\newcommand{\visualcaption}[1]{\par\smallskip{\small #1\par}}
+
+\newcommand{\olsdistancevisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=.9cm,y=.6cm,font=\small]
+  % Illustrative data: x=(1,2,3,4,5), y=(2.6,2.4,4,4.4,6.6).
+  % The exact OLS fit is yhat=1+x; SSE=1.44. Alternative: 2+0.5*x; SSE=5.19.
+  \foreach \shift/\title/\aa/\bb/\col in
+    {0/{Другая прямая}/2/.5/accent,7/{Прямая МНК}/1/1/solbar} {
+    \begin{scope}[xshift=\shift cm]
+      \node[font=\small\bfseries] at (3,8.2) {\title};
+      \ifnum\shift=0
+        \node at (3,7.55) {$\widetilde y=2+0{,}5x$};
+      \else
+        \node at (3,7.55) {$\widehat y=1+x$};
+      \fi
+      \draw[->] (0,0)--(6.25,0) node[right] {$x$};
+      \draw[->] (0,0)--(0,7.1) node[above] {$y$};
+      \foreach \xx in {1,...,5}
+        \draw (\xx,0)--(\xx,-.12) node[below] {\xx};
+      \foreach \yy in {0,2,4,6}
+        \draw (0,\yy)--(-.08,\yy) node[left] {\yy};
+      \draw[\col,very thick] (0,\aa)--(5.6,{\aa+\bb*5.6});
+      \foreach \xx/\yy in {1/2.6,2/2.4,3/4,4/4.4,5/6.6} {
+        \draw[\col,thick,dashed] (\xx,{\aa+\bb*\xx})--(\xx,\yy);
+        \draw[\col,fill=white] (\xx,{\aa+\bb*\xx}) circle (2pt);
+        \fill[black] (\xx,\yy) circle (2.5pt);
+      }
+      \ifnum\shift=0
+        \node[anchor=west,text=accent] at (5.12,5.5) {$2{,}1$};
+        \node[font=\small\bfseries,text=accent] at (3,-1.5)
+          {$\sum_t(y_t-\widetilde y_t)^2=5{,}19$};
+      \else
+        \node[anchor=west,text=solbar] at (5.25,6.9) {$0{,}6$};
+        \node[font=\small\bfseries,text=solbar] at (3,-1.5)
+          {$\sum_t(y_t-\widehat y_t)^2=1{,}44\;\text{(минимум)}$};
+      \fi
+    \end{scope}
+  }
+\end{tikzpicture}
+\visualcaption{Учебный пример: на обоих рисунках одни и те же пять наблюдений
+(чёрные точки). Пустые кружки — прогнозы при тех же $x_t$;
+пунктирные вертикальные отрезки соединяют наблюдение с прогнозом.}
+\end{seminarvisual}}
+
+\newcommand{\variancevisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=1cm,y=1cm,font=\small]
+  \foreach \shift/\title in {0/{Постоянный разброс},7/{Растущий разброс}} {
+    \begin{scope}[xshift=\shift cm]
+      \node[font=\small\bfseries] at (2.7,1.75) {\title};
+      \draw[->] (0,-1.3)--(0,1.4) node[left] {$e$};
+      \draw[->,gray] (0,0)--(5.5,0) node[right] {$x$};
+      \node[left] at (0,0) {0};
+      \foreach \xx/\rr in {0.35/0.5,0.65/-0.7,0.95/0.2,1.25/0.8,1.55/-0.4,1.85/0.1,2.15/-0.8,2.45/0.6,2.75/-0.2,3.05/0.7,3.35/-0.6,3.65/0.1,3.95/-0.9,4.25/0.8,4.55/0.3,4.85/-0.5,5.15/0.9} {
+        \ifnum\shift=0
+          \fill[accent] (\xx,\rr) circle (2pt);
+        \else
+          \fill[accent] (\xx,{\rr*(0.2+0.23*\xx)}) circle (2pt);
+        \fi
+      }
+      \ifnum\shift=0
+        \draw[accent,dashed] (0.2,1)--(5.3,1);
+        \draw[accent,dashed] (0.2,-1)--(5.3,-1);
+      \else
+        \draw[accent,dashed] (0.2,0.246)--(5.3,1.419);
+        \draw[accent,dashed] (0.2,-0.246)--(5.3,-1.419);
+      \fi
+    \end{scope}
+  }
+\end{tikzpicture}
+\visualcaption{Схематический пример: важна ширина облака вокруг нуля,
+а не наклон линии регрессии. Пунктир показывает изменение масштаба;
+это не доверительные границы.}
+\end{seminarvisual}}
+
+\newcommand{\fglsvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[font=\small,box/.style={draw=accent,rounded corners=2pt,
+  fill=accent!5,align=center,text width=3.5cm,minimum height=1.15cm}]
+  \node[box] (a) at (0,0) {МНК исходной модели\\$e_t=y_t-\widehat y_t$};
+  \node[box] (b) at (4.6,0) {Регрессия $e_t^2$ на $1,x_t$\\$\widehat\sigma_t^2=\widehat\mu+\widehat\delta x_t$};
+  \node[box,draw=solbar,fill=solbar!6] (c) at (9.2,0) {МНК после деления\\на $\widehat\sigma_t$};
+  \draw[->,thick,accent] (a)--(b);
+  \draw[->,thick,solbar] (b)--(c);
+  \draw[accent] (-1.85,0.85)--(-1.85,1.02)--(6.45,1.02)--(6.45,0.85);
+  \node[above,font=\small\bfseries] at (2.3,1.02) {Этап 1: оценить дисперсии};
+  \node[above,font=\small\bfseries] at (9.2,1.02) {Этап 2: ВМНК};
+\end{tikzpicture}
+\visualcaption{Два этапа включают три регрессии. Во втором этапе вес
+наблюдения равен $1/\widehat\sigma_t^2$; делитель — $\widehat\sigma_t$.}
+\end{seminarvisual}}
+
+\newcommand{\dwvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=3cm,y=1cm,font=\small]
+  \fill[accent!15] (0,0) rectangle (1.27,.6);
+  \fill[notebar!25] (1.27,0) rectangle (1.45,.6);
+  \fill[solbar!12] (1.45,0) rectangle (4,.6);
+  \draw[->] (0,0)--(4.1,0) node[right] {DW};
+  \draw[dashed] (1.27,0)--(1.27,.8);
+  \draw[dashed] (1.45,0)--(1.45,.8);
+  \node[anchor=north east] at (1.27,-.12) {$d_L=1{,}27$};
+  \node[anchor=north west] at (1.45,-.12) {$d_U=1{,}45$};
+  \node[below] at (0,0) {0}; \node[below] at (4,0) {4};
+  \node at (.60,.3) {Отвергаем $H_0$};
+  \node at (2.75,.3) {Не отвергаем $H_0$};
+  \node[anchor=south west] at (1.5,1.25) {Зона неопределённости};
+  \draw[->,notebar] (1.65,1.2)--(1.36,.65);
+  \draw[->,very thick,accent] (1.103,1.08)--(1.103,.64);
+  \node[anchor=south east,text=accent] at (1.13,1.08) {$\mathrm{DW}=1{,}103$};
+\end{tikzpicture}
+\visualcaption{Задача 6.6: $H_0\!:\rho=0$ против $H_1\!:\rho>0$,
+уровень 5\,\%. Наблюдаемая статистика попадает в область отвержения.
+Правая область относится только к этой односторонней проверке.}
+\end{seminarvisual}}
+
+\newcommand{\arresidualvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=.235cm,y=2.3cm,font=\small]
+  \foreach \shift/\title in {0/{Исходные остатки $e_t$},30/{Инновации после AR(1)}} {
+    \begin{scope}[xshift=\shift*.235cm]
+      \node[font=\small\bfseries] at (12.5,.88) {\title};
+      \draw[->] (0,-.65)--(0,.70);
+      \draw[gray,dashed] (0,0)--(24,0);
+      \draw[->] (0,-.65)--(25,-.65) node[right] {$t$};
+      \foreach \xx in {1,6,12,18,24}
+        \draw (\xx,-.65)--(\xx,-.69) node[below] {\xx};
+      \foreach \yy/\lab in {-.5/{-0{,}5},0/0,.5/{0{,}5}}
+        \node[left] at (0,\yy) {$\lab$};
+      \ifnum\shift=0
+        \draw[accent,thick] plot[mark=*,mark size=1.7pt] coordinates {\olsTimeCoordinates};
+      \else
+        \draw[solbar,thick] plot[mark=*,mark size=1.7pt] coordinates {\arTimeCoordinates};
+      \fi
+    \end{scope}
+  }
+\end{tikzpicture}
+\visualcaption{Данные задачи 6.6, одинаковый масштаб по вертикали.
+Слева $\mathrm{DW}=1{,}103$, справа $2{,}162$.
+Справа показаны $\widehat\eta_t=\widehat\varepsilon_t-
+\widehat\rho\widehat\varepsilon_{t-1}$, поэтому ряд начинается с $t=2$.
+График дополняет диагностику, но не доказывает независимость.}
+\end{seminarvisual}}
+
+\newcommand{\intervalvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=14cm,y=1cm,font=\small]
+  % Plot x = beta + 1.1 to keep node positions compact.
+  \draw[->] (0,0)--(.63,0) node[right] {$\beta_2$};
+  \foreach \xx/\lab in {0/{-1{,}1},.1/{-1{,}0},.2/{-0{,}9},.3/{-0{,}8},.4/{-0{,}7},.5/{-0{,}6},.6/{-0{,}5}}
+    \draw (\xx,0)--(\xx,-.07) node[below] {$\lab$};
+  \node[anchor=east,align=right] at (-.02,1.65) {МНК};
+  \node[anchor=east,align=right] at (-.02,.65) {С AR(1)};
+  \draw[accent,line width=1.3pt] (.086,1.65)--(.556,1.65);
+  \draw[solbar,line width=1.3pt] (.075,.65)--(.462,.65);
+  \foreach \xx in {.086,.556} \draw[accent] (\xx,1.55)--(\xx,1.75);
+  \foreach \xx in {.075,.462} \draw[solbar] (\xx,.55)--(\xx,.75);
+  \fill[accent] (.3209,1.65) circle (2.7pt);
+  \fill[solbar] (.2688,.65) circle (2.7pt);
+  \node[above] at (.086,1.75) {$-1{,}014$};
+  \node[above] at (.556,1.75) {$-0{,}544$};
+  \node[above] at (.075,.75) {$-1{,}025$};
+  \node[above] at (.462,.75) {$-0{,}638$};
+\end{tikzpicture}
+\visualcaption{Точки — оценки $\beta_2$, отрезки — 95\,\%-ные интервалы.
+Интервал МНК построен при нарушенной предпосылке независимости;
+интервал с AR(1) — приближённый.}
+\end{seminarvisual}}
+
+\newcommand{\gqvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=.4cm,y=1cm,font=\small]
+  \fill[accent!14] (0,0) rectangle (12,.65);
+  \fill[gray!15] (12,0) rectangle (18,.65);
+  \fill[solbar!15] (18,0) rectangle (30,.65);
+  \foreach \xx in {0,...,30} \draw[white,thick] (\xx,0)--(\xx,.65);
+  \node[above,align=center] at (6,.7) {Первые 12 семей\\$Y=12000$--$15000$};
+  \node[above,align=center] at (15,.7) {Пропускаем 6\\$16000$--$17000$};
+  \node[above,align=center] at (24,.7) {Последние 12 семей\\$Y=18000$--$21000$};
+  \node[below] at (6,0) {$\ESS_1=1\,046\,000$};
+  \node[below] at (24,0) {$\ESS_2=3\,344\,000$};
+  \draw[->] (0,-.65)--(30,-.65) node[below,anchor=north east] {Доход возрастает};
+\end{tikzpicture}
+\visualcaption{Каждая ячейка — одна семья. Оцениваем две отдельные
+регрессии $C$ на $Y$ с константой; сравниваем $\ESS_2/10$ и $\ESS_1/10$.}
+\end{seminarvisual}}
+
+\newcommand{\wlsresidualvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=.58cm,y=.55cm,font=\small]
+  \foreach \shift/\title in {0/{До коррекции},12/{После деления на доход}} {
+    \begin{scope}[xshift=\shift*.58cm]
+      \node[font=\small\bfseries] at (4.5,3.15) {\title};
+      \draw[->] (-.5,-2.6)--(-.5,2.7);
+      \draw[gray,dashed] (-.5,0)--(9.5,0);
+      \draw[->] (-.5,-2.6)--(9.8,-2.6);
+      \foreach \xx/\lab in {0/12,3/15,6/18,9/21}
+        \draw (\xx,-2.6)--(\xx,-2.72) node[below] {\lab};
+      \foreach \yy in {-2,0,2} \node[left] at (-.5,\yy) {$\yy$};
+      \node[below] at (4.5,-3.3) {Доход, тыс. долл.};
+      \ifnum\shift=0
+        \foreach \p in \olsIncomeCoordinates \fill[accent] \p circle (2pt);
+      \else
+        \foreach \p in \wlsIncomeCoordinates \fill[solbar] \p circle (2pt);
+      \fi
+    \end{scope}
+  }
+\end{tikzpicture}
+\visualcaption{Данные задачи 6.7: слева остатки МНК $e_t$, справа остатки
+ВМНК $\widehat v_t=(C_t-\widehat\alpha-\widehat\beta Y_t)/Y_t$. Чтобы
+ряды были в одном масштабе, каждый разделён на корень из среднего квадрата
+своих значений. Слева у 15 семей с высоким доходом разброс почти вдвое
+больше, чем у 15 семей с низким (1,24 против 0,69); справа разница
+заметно меньше (1,12 против 0,87).}
+\end{seminarvisual}}
+
+\newcommand{\spearmanrankvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=.93cm,y=.52cm,font=\scriptsize]
+  % Problem 6.7: |e_t| sorted ascending; two strips of 15 positions.
+  \foreach \p/\v/\r/\fam/\tie in {0/$8{,}48$/$1$/17/0,1/$25{,}45$/$2{,}5$/11/1,2/$25{,}45$/$2{,}5$/20/1,3/$42{,}42$/$4$/23/0,4/$57{,}58$/$5$/8/0,5/$59{,}39$/$6$/5/0,6/$76{,}36$/$7$/2/0,7/$91{,}52$/$8$/15/0,8/$108{,}48$/$9$/14/0,9/$223{,}64$/$10{,}5$/3/1,10/$223{,}64$/$10{,}5$/29/1,11/$242{,}42$/$12$/7/0,12/$259{,}39$/$13$/26/0,13/$274{,}55$/$14$/12/0,14/$276{,}36$/$15$/1/0,15/$308{,}48$/$16$/13/0,16/$325{,}45$/$17$/10/0,17/$340{,}61$/$18{,}5$/6/1,18/$340{,}61$/$18{,}5$/25/1,19/$359{,}39$/$20$/4/0,20/$408{,}48$/$21$/18/0,21/$442{,}42$/$22$/24/0,22/$476{,}36$/$23$/30/0,23/$491{,}52$/$24$/16/0,24/$557{,}58$/$25$/22/0,25/$657{,}58$/$26$/9/0,26/$674{,}55$/$27$/19/0,27/$725{,}45$/$28$/21/0,28/$823{,}64$/$29$/28/0,29/$859{,}39$/$30$/27/0} {
+    \pgfmathtruncatemacro{\row}{\p>14 ? 1 : 0}
+    \pgfmathsetmacro{\xx}{\p-15*\row}
+    \pgfmathsetmacro{\yy}{-4.2*\row}
+    \begin{scope}[shift={(\xx,\yy)}]
+      \ifnum\tie=1 \fill[notebar!35] (0,1) rectangle (1,3);
+      \else \fill[gray!10] (0,1) rectangle (1,3); \fi
+      \node at (.5,2.5) {\v};
+      \node at (.5,1.5) {\r};
+      \node[text=gray] at (.5,.5) {\fam};
+      \draw[white,thick] (0,1)--(0,3) (1,1)--(1,3);
+    \end{scope}
+  }
+  \foreach \yy in {0,-4.2} {
+    \node[anchor=east,font=\small] at (-.05,2.5+\yy) {$|e_t|$};
+    \node[anchor=east,font=\small] at (-.05,1.5+\yy) {ранг};
+    \node[anchor=east,font=\small,text=gray] at (-.05,.5+\yy) {семья};
+  }
+  \draw[->] (0,-4.55)--(15,-4.55) node[below,anchor=north east,font=\small] {$|e_t|$ возрастает};
+\end{tikzpicture}
+\visualcaption{30 значений $|e_t|$ по возрастанию (вторая строка рисунка —
+продолжение первой). Ранг — номер места; выделенные цветом ячейки — совпадающие
+значения, им дан средний ранг занимаемых мест.}
+\end{seminarvisual}}
+
+\newcommand{\spearmanvisual}{%
+\begin{seminarvisual}
+\begin{tikzpicture}[x=.93cm,y=.52cm,font=\scriptsize]
+  % Problem 6.7: families t=1..30 in income order; two strips of 15.
+  \foreach \k in {0,...,9} {
+    \pgfmathtruncatemacro{\inc}{12+\k}
+    \pgfmathtruncatemacro{\ry}{3*\k+2}
+    \pgfmathtruncatemacro{\row}{\k>4 ? 1 : 0}
+    \pgfmathsetmacro{\xx}{3*\k-15*\row}
+    \pgfmathsetmacro{\yy}{-4.8*\row}
+    \ifodd\k \def\blk{gray!22}\else\def\blk{gray!10}\fi
+    \fill[\blk] (\xx,2+\yy) rectangle (\xx+3,3.4+\yy);
+    \node at (\xx+1.5,3.0+\yy) {$Y=\inc\,000$};
+    \node at (\xx+1.5,2.4+\yy) {$R_Y=\ry$};
+    \draw[white,thick] (\xx,2+\yy)--(\xx,3.4+\yy);
+  }
+  \foreach \i/\r/\s in {0/$15$/36,1/$7$/20,2/$10{,}5$/27,3/$20$/46,4/$6$/18,5/$18{,}5$/43,6/$12$/30,7/$5$/16,8/$26$/58,9/$17$/40,10/$2{,}5$/11,11/$14$/34,12/$16$/38,13/$9$/24,14/$8$/22,15/$24$/54,16/$1$/8,17/$21$/48,18/$27$/60,19/$2{,}5$/11,20/$28$/62,21/$25$/56,22/$4$/14,23/$22$/50,24/$18{,}5$/43,25/$13$/32,26/$30$/66,27/$29$/64,28/$10{,}5$/27,29/$23$/52} {
+    \pgfmathtruncatemacro{\row}{\i>14 ? 1 : 0}
+    \pgfmathsetmacro{\xx}{\i-15*\row}
+    \pgfmathsetmacro{\yy}{-4.8*\row}
+    \fill[accent!\s] (\xx,1+\yy) rectangle (\xx+1,2+\yy);
+    \node at (\xx+.5,1.5+\yy) {\r};
+    \draw[white,thick] (\xx,1+\yy)--(\xx,2+\yy);
+  }
+  \foreach \i/\dd in {0/$-13$,1/$-5$,2/$-8{,}5$,3/$-15$,4/$-1$,5/$-13{,}5$,6/$-4$,7/$3$,8/$-18$,9/$-6$,10/$8{,}5$,11/$-3$,12/$-2$,13/$5$,14/$6$,15/$-7$,16/$16$,17/$-4$,18/$-7$,19/$17{,}5$,20/$-8$,21/$-2$,22/$19$,23/$1$,24/$7{,}5$,25/$13$,26/$-4$,27/$0$,28/$18{,}5$,29/$6$} {
+    \pgfmathtruncatemacro{\row}{\i>14 ? 1 : 0}
+    \pgfmathsetmacro{\xx}{\i-15*\row}
+    \pgfmathsetmacro{\yy}{-4.8*\row}
+    \node at (\xx+.5,.5+\yy) {\dd};
+    \node[text=gray] at (\xx+.5,-.4+\yy) {\pgfmathparse{int(\i+1)}\pgfmathresult};
+  }
+  \foreach \yy in {0,-4.8} {
+    \node[anchor=east,font=\small] at (-.05,2.7+\yy) {доход};
+    \node[anchor=east,font=\small] at (-.05,1.5+\yy) {$R_{|e|}$};
+    \node[anchor=east,font=\small] at (-.05,.5+\yy) {$d_t$};
+    \node[anchor=east,font=\small,text=gray] at (-.05,-.4+\yy) {семья};
+  }
+\end{tikzpicture}
+\visualcaption{Семьи в порядке роста дохода (вторая строка — продолжение
+первой). Чем больше ранг $|e_t|$, тем темнее ячейка; $d_t=R_Y-R_{|e|}$,
+$\sum d_t^2=2931{,}5$. Тёмные ячейки чаще во второй строке, но не только
+там: связь положительная, но слабая.}
+\end{seminarvisual}}
